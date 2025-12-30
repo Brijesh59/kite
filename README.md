@@ -6,7 +6,7 @@
 
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone `https://github.com/Brijesh59/kite.git`
 cd kite
 
 # Install dependencies
@@ -17,7 +17,7 @@ cp apps/backend/.env.example apps/backend/.env
 cp apps/admin-panel/.env.example apps/admin-panel/.env
 cp apps/web-app/.env.example apps/web-app/.env
 
-# Setup database
+# Setup database (Make sure to update the db url in apps/backend/.env with your postgresql db creds)
 pnpm db:generate
 pnpm db:migrate
 
@@ -149,7 +149,7 @@ pnpm clean            # Remove all node_modules
 
 ### Backend (.env)
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5440/kite"
+DATABASE_URL="postgresql://user:password@localhost:5432/kite"
 PORT=9000
 ADMIN_PANEL_URL="http://localhost:5173"
 WEB_APP_URL="http://localhost:5174"
@@ -222,7 +222,7 @@ MIT License - feel free to use this template for your projects!
 
 - 📚 [Complete Documentation](docs/README.md)
 - 💬 [Create an Issue](../../issues)
-- 📧 Contact: support@example.com
+- 📧 Contact: kumarbrijesh9021@gmail.com
 
 ---
 
