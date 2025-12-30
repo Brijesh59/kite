@@ -1,0 +1,123 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String  @id @default(uuid())
+  name             String
+  email            String  @unique(map: "uq_user_email")
+  mobile           String? @unique(map: "uq_user_mobile")
+  password         String
+  role             Role    @default(USER)
+  isActive         Boolean @default(true)
+  isEmailVerified  Boolean @default(false)
+  isMobileVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sessions    Session[]
+  authTokens  AuthToken[]
+  otps        Otp[]
+  posts       Post[]
+  userProfile UserProfile?
+
+  @@map("users")
+}
+
+model Otp {
+  id     String @id @default(uuid())
+  userId String
+
+  type String // "EMAIL", "MOBILE"
+  code String
+
+  used Boolean @default(false)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("otps")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model AuthToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  type      String // "RESET_PASSWORD", "EMAIL_VERIFY"
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_tokens")
+}
+
+model Post {
+  id          String     @id @default(uuid())
+  userId      String
+  title       String     @db.VarChar(200)
+  content     String     @db.Text
+  status      PostStatus @default(DRAFT)
+  isActive    Boolean    @default(true)
+  publishedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("posts")
+}
+
+model UserProfile {
+  id       String  @id @default(uuid())
+  userId   String  @unique
+  bio      String? @db.Text
+  avatar   String?
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+  ORGANISER
+  ARTIST
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
