@@ -1,6 +1,6 @@
-import { SidebarInset, SidebarProvider } from "@kite/ui";
 import { AppSidebar } from "./app-sidebar";
 import { SiteHeader } from "./site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;

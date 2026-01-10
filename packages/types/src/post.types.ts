@@ -1,8 +1,10 @@
 import type { User } from "./user.types";
+import type { Workspace } from "./workspace.types";
 
 export interface Post {
   id: string;
   userId: string;
+  workspaceId: string;
   title: string;
   content: string;
   status: "DRAFT" | "PUBLISHED";
@@ -11,11 +13,13 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   user?: User;
+  workspace?: Workspace;
 }
 
 export interface CreatePostRequest {
   title: string;
   content: string;
+  workspaceId: string;
 }
 
 export interface UpdatePostRequest {
@@ -35,6 +39,7 @@ export interface GetPostsQuery {
   status?: "DRAFT" | "PUBLISHED" | "ALL";
   search?: string;
   userId?: string;
+  workspaceId?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   tags?: string;

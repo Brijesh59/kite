@@ -1,11 +1,11 @@
-import { Button } from "@kite/ui";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@kite/ui";
+} from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface UserPaginationProps {

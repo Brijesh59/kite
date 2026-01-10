@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@kite/ui";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface DashboardErrorStateProps {
   error: Error;

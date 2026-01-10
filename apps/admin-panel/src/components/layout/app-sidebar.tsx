@@ -6,23 +6,12 @@ import {
   User,
   Settings,
   FileText,
+  Briefcase,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarSeparator,
-} from "@kite/ui";
-import { Button } from "@kite/ui";
 import { useAuthStore } from "@/utils/auth-store";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -41,6 +30,11 @@ const menuItems = [
     title: "Posts",
     url: "/posts",
     icon: FileText,
+  },
+  {
+    title: "Workspaces",
+    url: "/workspaces",
+    icon: Briefcase,
   },
 ];
 

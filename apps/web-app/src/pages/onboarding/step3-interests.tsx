@@ -1,7 +1,7 @@
-import { Button } from "@kite/ui";
-import { Checkbox } from "@kite/ui";
 import { INTEREST_OPTIONS } from "@kite/config";
 import type { OnboardingFormData } from "./index";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Step3InterestsProps {
   data: OnboardingFormData;

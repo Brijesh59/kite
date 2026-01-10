@@ -1,10 +1,10 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
- * Format date utility function
+ * Merge Tailwind CSS classes with proper precedence
+ * Combines clsx for conditional classes and tailwind-merge for deduplication
  */
-export function formatDate(date: string | Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

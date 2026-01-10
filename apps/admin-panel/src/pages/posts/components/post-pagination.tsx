@@ -1,4 +1,3 @@
-import { Button } from "@kite/ui";
 
 interface PaginationInfo {
   total: number;

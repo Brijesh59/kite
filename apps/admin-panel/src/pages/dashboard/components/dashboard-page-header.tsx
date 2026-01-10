@@ -1,5 +1,5 @@
-import { Button } from "@kite/ui";
 import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DashboardPageHeaderProps {
   onNavigate: (path: string) => void;

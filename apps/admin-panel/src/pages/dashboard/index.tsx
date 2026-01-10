@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 import { FileText, Users, CheckCircle, XCircle } from "lucide-react";
 import { usePosts } from "@/api/posts/use-posts";
 import { useUsers } from "@/api/users/use-users";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function DashboardPage() {
   const { data: postsData } = usePosts({ limit: 1000 });

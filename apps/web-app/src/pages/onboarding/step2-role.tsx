@@ -1,7 +1,7 @@
-import { Button } from "@kite/ui";
 import { useAuthStore } from "@/utils/auth-store";
 import { ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, REGISTERABLE_ROLES } from "@kite/config";
 import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Step2RoleProps {
   onNext: () => void;

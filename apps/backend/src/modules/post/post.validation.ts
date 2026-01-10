@@ -21,6 +21,7 @@ export const postValidation = {
           "string.max": `Content cannot exceed ${POST_LIMITS.contentMaxLength} characters`,
           "any.required": "Content is required",
         }),
+      // workspaceId is extracted from x-workspace-id header, not body
     }),
   },
 
@@ -117,6 +118,9 @@ export const postValidation = {
       search: Joi.string().min(2).max(100).optional().messages({
         "string.min": "Search term must be at least 2 characters long",
         "string.max": "Search term cannot exceed 100 characters",
+      }),
+      workspaceId: Joi.string().uuid().optional().messages({
+        "string.uuid": "Invalid workspace ID format",
       }),
     }),
   },

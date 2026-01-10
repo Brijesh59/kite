@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 import { FileText, Eye, EyeOff, Calendar } from "lucide-react";
 import type { Post } from "@kite/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PostStatsCardsProps {
   posts: Post[];

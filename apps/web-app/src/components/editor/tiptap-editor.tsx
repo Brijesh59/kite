@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import { Button } from "@/components/ui/button";
 import {
   Bold,
   Italic,
@@ -11,9 +12,8 @@ import {
   Quote,
   Undo,
   Redo,
-  Code
+  Code,
 } from "lucide-react";
-import { Button } from "@kite/ui";
 
 interface TiptapEditorProps {
   content: string;
@@ -21,7 +21,11 @@ interface TiptapEditorProps {
   placeholder?: string;
 }
 
-export function TiptapEditor({ content, onChange, placeholder = "Start writing..." }: TiptapEditorProps) {
+export function TiptapEditor({
+  content,
+  onChange,
+  placeholder = "Start writing...",
+}: TiptapEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -35,7 +39,8 @@ export function TiptapEditor({ content, onChange, placeholder = "Start writing..
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] p-4",
+        class:
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] p-4",
       },
     },
   });
@@ -84,9 +89,13 @@ export function TiptapEditor({ content, onChange, placeholder = "Start writing..
 
         <Button
           type="button"
-          variant={editor.isActive("heading", { level: 2 }) ? "default" : "ghost"}
+          variant={
+            editor.isActive("heading", { level: 2 }) ? "default" : "ghost"
+          }
           size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
         >
           <Heading2 className="h-4 w-4" />
         </Button>

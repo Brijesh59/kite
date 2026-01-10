@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@kite/ui";
-import { Input } from "@kite/ui";
-import { Textarea } from "@kite/ui";
-import { Checkbox } from "@kite/ui";
 import { useAuthStore } from "@/utils/auth-store";
 import { INTEREST_OPTIONS } from "@kite/config";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const profileSchema = z.object({
   bio: z.string().max(500).optional(),

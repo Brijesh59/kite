@@ -1,7 +1,7 @@
-import { Input } from "@kite/ui";
-import { Textarea } from "@kite/ui";
-import { Button } from "@kite/ui";
 import type { OnboardingFormData } from "./index";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface Step1ProfileProps {
   data: OnboardingFormData;

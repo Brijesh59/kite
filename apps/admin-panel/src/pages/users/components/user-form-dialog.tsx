@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@kite/ui";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,16 +7,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@kite/ui";
-import { Input } from "@kite/ui";
-import { Label } from "@kite/ui";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@kite/ui";
+} from "@/components/ui/select";
 import {
   type User,
   type CreateUserRequest,

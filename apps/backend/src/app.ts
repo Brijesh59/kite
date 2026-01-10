@@ -6,6 +6,7 @@ import { setAuthRoutes } from "./modules/auth/auth.routes";
 import { setPostRoutes } from "./modules/post/post.routes";
 import { setAdminRoutes } from "./modules/admin/admin.routes";
 import { setProfileRoutes } from "./modules/profile/profile.routes";
+import workspaceRoutes from "./modules/workspace/workspace.routes";
 import { httpLogger } from "./middleware/httpLogger";
 
 const app = express();
@@ -38,6 +39,7 @@ setAuthRoutes(app);
 setPostRoutes(app);
 setAdminRoutes(app);
 setProfileRoutes(app);
+app.use("/api/workspaces", workspaceRoutes);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

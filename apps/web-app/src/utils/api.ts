@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import { useWorkspaceStore } from "./workspace-store";
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -25,6 +26,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  // Add current workspace ID to headers
+  const currentWorkspace = useWorkspaceStore.getState().currentWorkspace;
+  if (currentWorkspace) {
+    config.headers["x-workspace-id"] = currentWorkspace.id;
+  }
   return config;
 });
 

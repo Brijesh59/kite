@@ -5,12 +5,9 @@ import {
   ForbiddenException,
 } from "../../common/app-error";
 import {
-  CreatePostRequest,
-  UpdatePostRequest,
-  GetPostsQuery,
   POST_STATUS,
 } from "./post.types";
-import type { Post } from "@kite/types";
+import type { Post, CreatePostRequest, UpdatePostRequest, GetPostsQuery } from "@kite/types";
 import { PAGINATION } from "@kite/config";
 
 export class PostService {
@@ -20,9 +17,13 @@ export class PostService {
    * Create a new post (always starts as DRAFT)
    */
   async createPost(userId: string, data: CreatePostRequest): Promise<Post> {
+    // Verify workspace access
+    await this.verifyWorkspaceAccess(data.workspaceId, userId);
+
     const post = await this.prisma.post.create({
       data: {
         userId,
+        workspaceId: data.workspaceId,
         title: data.title,
         content: data.content,
         status: POST_STATUS.DRAFT,
@@ -34,6 +35,13 @@ export class PostService {
             name: true,
             email: true,
             role: true,
+          },
+        },
+        workspace: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
         },
       },
@@ -63,6 +71,13 @@ export class PostService {
       userId,
       isActive: true,
     };
+
+    // Filter by workspace
+    if (query.workspaceId) {
+      where.workspaceId = query.workspaceId;
+      // Verify user has access to this workspace
+      await this.verifyWorkspaceAccess(query.workspaceId, userId);
+    }
 
     // Filter by status
     if (query.status && query.status !== "ALL") {
@@ -133,6 +148,11 @@ export class PostService {
     // Filter by user
     if (query.userId) {
       where.userId = query.userId;
+    }
+
+    // Filter by workspace
+    if (query.workspaceId) {
+      where.workspaceId = query.workspaceId;
     }
 
     // Filter by status
@@ -354,12 +374,33 @@ export class PostService {
   }
 
   /**
+   * Verify user has access to workspace
+   */
+  private async verifyWorkspaceAccess(
+    workspaceId: string,
+    userId: string
+  ): Promise<void> {
+    const member = await this.prisma.workspaceMember.findFirst({
+      where: {
+        workspaceId,
+        userId,
+        workspace: { isActive: true },
+      },
+    });
+
+    if (!member) {
+      throw new ForbiddenException("You do not have access to this workspace");
+    }
+  }
+
+  /**
    * Format post data to match shared types
    */
   private formatPost(post: any): Post {
     return {
       id: post.id,
       userId: post.userId,
+      workspaceId: post.workspaceId,
       title: post.title,
       content: post.content,
       status: post.status,
@@ -375,6 +416,15 @@ export class PostService {
         isActive: true,
         isEmailVerified: false,
         isMobileVerified: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } : undefined,
+      workspace: post.workspace ? {
+        id: post.workspace.id,
+        name: post.workspace.name,
+        slug: post.workspace.slug,
+        ownerId: post.workspace.ownerId || "",
+        isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       } : undefined,

@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader } from "@kite/ui";
 
 export function DashboardLoadingState() {
   return (

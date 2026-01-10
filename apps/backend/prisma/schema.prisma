@@ -23,11 +23,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  sessions    Session[]
-  authTokens  AuthToken[]
-  otps        Otp[]
-  posts       Post[]
-  userProfile UserProfile?
+  sessions             Session[]
+  authTokens           AuthToken[]
+  otps                 Otp[]
+  posts                Post[]
+  userProfile          UserProfile?
+  ownedWorkspaces      Workspace[]
+  workspaceMemberships WorkspaceMember[]
 
   @@map("users")
 }
@@ -78,6 +80,7 @@ model AuthToken {
 model Post {
   id          String     @id @default(uuid())
   userId      String
+  workspaceId String
   title       String     @db.VarChar(200)
   content     String     @db.Text
   status      PostStatus @default(DRAFT)
@@ -87,10 +90,12 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
+  @@index([workspaceId])
   @@map("posts")
 }
 
@@ -109,6 +114,42 @@ model UserProfile {
   @@map("user_profiles")
 }
 
+model Workspace {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(100)
+  slug        String   @unique @db.VarChar(120)
+  description String?  @db.Text
+  ownerId     String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner   User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members WorkspaceMember[]
+  posts   Post[]
+
+  @@index([ownerId])
+  @@index([slug])
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String              @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceMemberRole @default(MEMBER)
+  joinedAt    DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@map("workspace_members")
+}
+
 // Enums
 enum Role {
   USER
@@ -120,4 +161,10 @@ enum Role {
 enum PostStatus {
   DRAFT
   PUBLISHED
+}
+
+enum WorkspaceMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
 }

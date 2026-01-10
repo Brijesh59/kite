@@ -1,20 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@kite/ui";
-import { Button } from "@kite/ui";
-import { Input } from "@kite/ui";
-import { Textarea } from "@kite/ui";
-import { Label } from "@kite/ui";
-import { Switch } from "@kite/ui";
 import type { Post, CreatePostRequest } from "@kite/types";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 const postSchema = z.object({
   title: z

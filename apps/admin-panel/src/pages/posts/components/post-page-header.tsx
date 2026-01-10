@@ -1,5 +1,5 @@
-import { Button } from "@kite/ui";
 import { FileText, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PostPageHeaderProps {
   onCreatePost: () => void;

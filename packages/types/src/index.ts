@@ -4,3 +4,4 @@ export * from "./post.types";
 export * from "./api.types";
 export * from "./dashboard.types";
 export * from "./profile.types";
+export * from "./workspace.types";

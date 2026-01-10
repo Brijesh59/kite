@@ -18,6 +18,7 @@ import ResetPasswordPage from "@/pages/auth/reset-password";
 import DashboardPage from "@/pages/dashboard";
 import UsersPage from "@/pages/users";
 import PostsPage from "@/pages/posts";
+import WorkspacesPage from "@/pages/workspaces";
 import SettingsPage from "@/pages/settings";
 
 const queryClient = new QueryClient({
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" element={<DashboardPage />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/posts" element={<PostsPage />} />
+              <Route path="/workspaces" element={<WorkspacesPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
 

@@ -1,39 +1,18 @@
 import { useState } from "react";
-import { Button } from "@kite/ui";
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
-import { Badge } from "@kite/ui";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@kite/ui";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@kite/ui";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@kite/ui";
 import {
   usePosts,
   useTogglePostStatus,
   useDeletePost,
 } from "@/api/posts/use-posts";
-import { LoadingSpinner } from "@kite/ui";
 import { Trash2, Ban, CheckCircle, Eye } from "lucide-react";
 import type { Post } from "@kite/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 export default function PostsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);

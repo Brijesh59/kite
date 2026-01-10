@@ -22,6 +22,7 @@ import DashboardPage from "@/pages/dashboard";
 import PostsPage from "@/pages/posts";
 import PostFormPage from "@/pages/posts/post-form";
 import ProfilePage from "@/pages/profile";
+import WorkspacesPage from "@/pages/workspaces";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +60,7 @@ function App() {
               <Route path="/posts" element={<PostsPage />} />
               <Route path="/posts/new" element={<PostFormPage />} />
               <Route path="/posts/edit/:id" element={<PostFormPage />} />
+              <Route path="/workspaces" element={<WorkspacesPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
 

@@ -1,22 +1,13 @@
 import { useState } from "react";
-import { Button } from "@kite/ui";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@kite/ui";
-import { Badge } from "@kite/ui";
 import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePosts, useDeletePost, usePublishPost, useUnpublishPost } from "@/api/posts/use-posts";
-import { LoadingSpinner } from "@kite/ui";
 import type { Post } from "@kite/types";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@kite/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { LoadingSpinner } from "@/components/ui/loading";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function PostsPage() {
   const [statusFilter, setStatusFilter] = useState<"ALL" | "DRAFT" | "PUBLISHED">("ALL");

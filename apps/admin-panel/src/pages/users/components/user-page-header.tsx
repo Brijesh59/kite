@@ -1,4 +1,4 @@
-import { Button } from "@kite/ui";
+import { Button } from "@/components/ui/button";
 import { Users, Plus } from "lucide-react";
 
 interface UserPageHeaderProps {

@@ -5,15 +5,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@kite/ui";
-import { Badge } from "@kite/ui";
-import { Button } from "@kite/ui";
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@kite/ui";
+} from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit2, Trash2 } from "lucide-react";
 import { type User } from "@kite/types";
 import { formatDate } from "@/lib/utils";

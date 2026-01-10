@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 import { PostTable } from "./post-table";
 import { PostPagination } from "./post-pagination";
 import { PostSearchFilters } from "./post-search-filters";
 import type { Post } from "@kite/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PaginationInfo {
   total: number;

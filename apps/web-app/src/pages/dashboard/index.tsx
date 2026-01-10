@@ -1,9 +1,9 @@
 import { useAuthStore } from "@/utils/auth-store";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@kite/ui";
 import { FileText, User, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@kite/ui";
 import { usePosts } from "@/api/posts/use-posts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);

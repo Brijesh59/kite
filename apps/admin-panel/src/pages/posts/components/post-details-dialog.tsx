@@ -1,15 +1,9 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@kite/ui";
-import { Badge } from "@kite/ui";
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 import { format } from "date-fns";
 import { Calendar, User, Eye, EyeOff, FileText } from "lucide-react";
 import type { Post } from "@kite/types";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PostDetailsDialogProps {
   open: boolean;

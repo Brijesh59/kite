@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 import { ArrowUpRight } from "lucide-react";
 import { type DashboardStats } from "@/api/dashboard/use-dashboard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DashboardStatsCardsProps {
   stats: DashboardStats | undefined;

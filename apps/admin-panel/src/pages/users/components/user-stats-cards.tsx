@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Shield, UserCheck, Calendar } from "lucide-react";
 import type { User } from "@kite/types";
 

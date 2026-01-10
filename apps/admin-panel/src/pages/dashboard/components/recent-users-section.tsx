@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@kite/ui";
-import { Badge } from "@kite/ui";
-import { Button } from "@kite/ui";
 import { ChevronRightIcon, UserIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;

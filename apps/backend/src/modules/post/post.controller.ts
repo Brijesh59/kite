@@ -21,7 +21,8 @@ export class PostController {
    */
   async createPost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const data: CreatePostRequest = req.body;
+    const workspaceId = req.headers["x-workspace-id"] as string;
+    const data: CreatePostRequest = { ...req.body, workspaceId };
 
     const post = await this.postService.createPost(userId, data);
 
@@ -37,7 +38,8 @@ export class PostController {
    */
   async getUserPosts(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const query: GetPostsQuery = req.query;
+    const workspaceId = req.headers["x-workspace-id"] as string;
+    const query: GetPostsQuery = { ...req.query, workspaceId };
 
     const result = await this.postService.getUserPosts(userId, query);
 

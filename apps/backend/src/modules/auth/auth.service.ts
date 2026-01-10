@@ -49,22 +49,78 @@ export class AuthService {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 12);
 
-    // Create user with default USER role
-    const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email.toLowerCase(),
-        mobile: data.mobile,
-        password: hashedPassword,
-        role: ROLES.USER,
-        isActive: true,
-      },
+    // Create user and default workspace in transaction
+    const result = await this.prisma.$transaction(async (tx) => {
+      // Create user with default USER role
+      const user = await tx.user.create({
+        data: {
+          name: data.name,
+          email: data.email.toLowerCase(),
+          mobile: data.mobile,
+          password: hashedPassword,
+          role: ROLES.USER,
+          isActive: true,
+        },
+      });
+
+      // Generate unique slug for workspace
+      const slug = await this.generateWorkspaceSlug(tx, data.name, user.id);
+
+      // Create default workspace
+      const workspace = await tx.workspace.create({
+        data: {
+          name: `${user.name}'s Workspace`,
+          slug,
+          description: "Your personal workspace",
+          ownerId: user.id,
+        },
+      });
+
+      // Create workspace member (owner)
+      await tx.workspaceMember.create({
+        data: {
+          userId: user.id,
+          workspaceId: workspace.id,
+          role: "OWNER",
+        },
+      });
+
+      return { user, workspace };
     });
 
     // Generate tokens
-    const tokens = await this.generateTokens(user);
+    const tokens = await this.generateTokens(result.user);
 
-    return { user: user as unknown as User, tokens };
+    return { user: result.user as unknown as User, tokens };
+  }
+
+  /**
+   * Generate unique workspace slug
+   */
+  private async generateWorkspaceSlug(
+    tx: any,
+    name: string,
+    userId: string
+  ): Promise<string> {
+    const baseSlug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    const userIdPart = userId.substring(0, 8);
+    let slug = `${baseSlug}-${userIdPart}`;
+
+    // Check uniqueness
+    const existing = await tx.workspace.findUnique({
+      where: { slug },
+    });
+
+    if (existing) {
+      const timestamp = Date.now().toString(36);
+      slug = `${baseSlug}-${userIdPart}-${timestamp}`;
+    }
+
+    return slug;
   }
 
   /**

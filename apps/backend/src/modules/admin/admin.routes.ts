@@ -54,6 +54,9 @@ router.put("/posts/:id", adminController.updatePost.bind(adminController));
 
 router.delete("/posts/:id", adminController.deletePost.bind(adminController));
 
+// Workspace management routes
+router.get("/workspaces", adminController.getWorkspaces.bind(adminController));
+
 export function setAdminRoutes(app: Express) {
   app.use("/api/admin", router);
 }

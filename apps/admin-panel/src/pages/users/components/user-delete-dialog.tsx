@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@kite/ui";
+} from "@/components/ui/alert-dialog";
 import { type User } from "@kite/types";
 
 interface UserDeleteDialogProps {

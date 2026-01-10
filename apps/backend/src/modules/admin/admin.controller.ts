@@ -157,4 +157,30 @@ export class AdminController {
       message: "Post deleted successfully",
     });
   }
+
+  /**
+   * Get all workspaces across all users with pagination and filtering
+   */
+  public async getWorkspaces(req: Request, res: Response) {
+    const query = {
+      page: parseInt(req.query.page as string) || 1,
+      limit: parseInt(req.query.limit as string) || 10,
+      search: req.query.search as string,
+      sortBy: (req.query.sortBy as any) || "createdAt",
+      sortOrder: (req.query.sortOrder as any) || "desc",
+    };
+
+    const result = await this.adminService.getWorkspaces(query);
+
+    res.status(200).json({
+      message: "Workspaces retrieved successfully",
+      data: {
+        items: result.workspaces,
+        total: result.pagination.total,
+        page: result.pagination.page,
+        limit: result.pagination.limit,
+        totalPages: result.pagination.totalPages,
+      },
+    });
+  }
 }

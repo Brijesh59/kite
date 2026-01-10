@@ -1,7 +1,7 @@
-import { Input } from "@kite/ui";
-import { Button } from "@kite/ui";
 import { useUpdateProfile } from "@/api/profile/use-profile";
 import type { OnboardingFormData } from "./index";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Step4LocationProps {
   data: OnboardingFormData;

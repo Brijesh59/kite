@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@kite/ui";
-import { Badge } from "@kite/ui";
-import { Button } from "@kite/ui";
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ChevronRightIcon, FileTextIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 

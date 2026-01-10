@@ -1,5 +1,4 @@
-/* Import shared UI styles from @kite/ui */
-@import "@kite/ui/styles";
+@import "tailwindcss";
 
 /* Import animation library */
 @import "tw-animate-css";

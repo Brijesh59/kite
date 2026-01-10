@@ -377,4 +377,71 @@ export class AdminService {
       where: { id },
     });
   }
+
+  /**
+   * Get all workspaces across all users with pagination and filtering
+   */
+  async getWorkspaces(query: any): Promise<any> {
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = query;
+
+    const skip = (page - 1) * limit;
+
+    // Build where clause
+    const where: Prisma.WorkspaceWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { slug: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // Build order by clause
+    const orderBy: Prisma.WorkspaceOrderByWithRelationInput = {};
+    (orderBy as any)[sortBy] = sortOrder;
+
+    // Get workspaces and total count
+    const [workspaces, total] = await Promise.all([
+      this.prisma.workspace.findMany({
+        where,
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          _count: {
+            select: {
+              members: true,
+              posts: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy,
+      }),
+      this.prisma.workspace.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      workspaces,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
+    };
+  }
 }

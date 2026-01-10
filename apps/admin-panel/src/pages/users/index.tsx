@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@kite/ui";
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
-import { Badge } from "@kite/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@kite/ui";
+} from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,9 +19,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@kite/ui";
-import { useUsers, useToggleUserStatus, useDeleteUser } from "@/api/users/use-users";
-import { LoadingSpinner } from "@kite/ui";
+} from "@/components/ui/alert-dialog";
+import {
+  useUsers,
+  useToggleUserStatus,
+  useDeleteUser,
+} from "@/api/users/use-users";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { Trash2, Ban, CheckCircle } from "lucide-react";
 
 export default function UsersPage() {
@@ -55,7 +59,9 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Users</h1>
-        <p className="mt-2 text-gray-600">Manage user accounts and permissions</p>
+        <p className="mt-2 text-gray-600">
+          Manage user accounts and permissions
+        </p>
       </div>
 
       <Card>
@@ -83,7 +89,11 @@ export default function UsersPage() {
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
+                      <Badge
+                        variant={
+                          user.role === "ADMIN" ? "default" : "secondary"
+                        }
+                      >
                         {user.role}
                       </Badge>
                     </TableCell>
@@ -100,7 +110,9 @@ export default function UsersPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleToggleStatus(user.id, user.isActive)}
+                          onClick={() =>
+                            handleToggleStatus(user.id, user.isActive)
+                          }
                           disabled={toggleStatusMutation.isPending}
                         >
                           {user.isActive ? (
@@ -132,7 +144,8 @@ export default function UsersPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the user account.
+              This action cannot be undone. This will permanently delete the
+              user account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

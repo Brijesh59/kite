@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@kite/ui";
 
 export default function SettingsPage() {
   return (

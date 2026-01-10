@@ -1,22 +1,12 @@
-import { Home, FileText, LogOut, User } from "lucide-react";
+import { Home, FileText, LogOut, User, Briefcase } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarSeparator,
-} from "@kite/ui";
-import { Button } from "@kite/ui";
 import { useAuthStore } from "@/utils/auth-store";
 import { useQueryClient } from "@tanstack/react-query";
+import { WorkspaceSwitcher } from "@/components/workspace-switcher";
+import { useWorkspaceStore } from "@/utils/workspace-store";
 
 const menuItems = [
   {
@@ -34,11 +24,14 @@ const menuItems = [
 export function AppSidebar() {
   const location = useLocation();
   const { user, logout } = useAuthStore();
+  const { clearWorkspaces } = useWorkspaceStore();
   const queryClient = useQueryClient();
 
   const handleLogout = () => {
     // Clear all React Query cache
     queryClient.clear();
+    // Clear workspace store
+    clearWorkspaces();
     // Logout from auth store
     logout();
   };
@@ -74,6 +67,12 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        <div className="px-3 py-2">
+          <WorkspaceSwitcher />
+        </div>
+
+        <SidebarSeparator />
+
         <SidebarGroup>
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -101,6 +100,17 @@ export function AppSidebar() {
           <SidebarGroupLabel>Account</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === "/workspaces"}
+                >
+                  <Link to="/workspaces">
+                    <Briefcase className="h-4 w-4" />
+                    <span>Workspaces</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild

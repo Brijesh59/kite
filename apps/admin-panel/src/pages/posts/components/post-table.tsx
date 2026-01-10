@@ -1,16 +1,9 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@kite/ui";
-import { Button } from "@kite/ui";
-import { Badge } from "@kite/ui";
 import { Edit2, Eye, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import type { Post } from "@kite/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface PostTableProps {
   posts: Post[];
