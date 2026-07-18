@@ -10,16 +10,16 @@ Shared packages allow code reuse across backend and frontend applications. They 
 
 ### 1. @kite/types
 
-Central TypeScript type definitions shared across all applications.
+Shared Zod schemas and inferred TypeScript types used across all applications.
 
 **Location**: `packages/types`
 
 #### Purpose
 
-- Single source of truth for data models
+- Single source of truth for runtime schemas and data contracts
 - Ensure type consistency between backend and frontend
 - Enable type-safe API communication
-- Share validation schemas
+- Share validation schemas for frontend forms and backend routes
 
 #### Structure
 
@@ -27,11 +27,13 @@ Central TypeScript type definitions shared across all applications.
 packages/types/
 ├── src/
 │   ├── index.ts              # Main export file
-│   ├── user.types.ts         # User-related types
-│   ├── auth.types.ts         # Authentication types
-│   ├── post.types.ts         # Post-related types
-│   ├── api.types.ts          # API response types
-│   └── common.types.ts       # Common utility types
+│   ├── schema-helpers.ts     # Zod preprocessors for query params
+│   ├── user.types.ts         # User schemas and inferred types
+│   ├── auth.types.ts         # Authentication schemas and inferred types
+│   ├── post.types.ts         # Post schemas and inferred types
+│   ├── workspace.types.ts    # Workspace schemas and inferred types
+│   ├── profile.types.ts      # Profile schemas and inferred types
+│   └── api.types.ts          # API response schemas and inferred types
 ├── package.json
 └── tsconfig.json
 ```
@@ -40,127 +42,97 @@ packages/types/
 
 **user.types.ts**
 ```typescript
-export type UserRole = "USER" | "ADMIN";
+import { z } from "zod";
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  mobile?: string;
-  role: UserRole;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export const userRoleSchema = z.enum(["ADMIN", "ORGANISER", "ARTIST", "USER"]);
+export type UserRole = z.infer<typeof userRoleSchema>;
 
-export interface CreateUserRequest {
-  name: string;
-  email: string;
-  mobile?: string;
-  password: string;
-  role: UserRole;
-}
+export const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  mobile: z.string().nullable().optional(),
+  role: userRoleSchema,
+  isActive: z.boolean(),
+  isEmailVerified: z.boolean(),
+  isMobileVerified: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type User = z.infer<typeof userSchema>;
 
-export interface UpdateUserRequest {
-  name?: string;
-  email?: string;
-  mobile?: string;
-  role?: UserRole;
-  isActive?: boolean;
-}
+export const createUserRequestSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  mobile: z.string().optional(),
+  password: z.string().min(8),
+  role: userRoleSchema.default("USER"),
+});
+export type CreateUserRequest = z.infer<typeof createUserRequestSchema>;
 ```
 
 **auth.types.ts**
 ```typescript
-export interface LoginRequest {
-  email?: string;
-  mobile?: string;
-  password: string;
-  otp?: string;
-  clientType?: 'web' | 'admin';
-}
+export const loginRequestSchema = z.object({
+  email: z.string().email().optional(),
+  mobile: z.string().optional(),
+  password: z.string().optional(),
+  otp: z.string().optional(),
+  clientType: z.enum(["web", "admin"]).optional(),
+});
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
 
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  mobile?: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  user: User;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken?: string;
-}
+export const registerRequestSchema = createUserRequestSchema.safeExtend({
+  clientType: z.enum(["web", "admin"]).optional(),
+});
+export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 ```
 
 **post.types.ts**
 ```typescript
-export type PostStatus = "DRAFT" | "PUBLISHED";
+export const postStatusSchema = z.enum(["DRAFT", "PUBLISHED"]);
+export type PostStatus = z.infer<typeof postStatusSchema>;
 
-export interface Post {
-  id: string;
-  title: string;
-  content: string;
-  status: PostStatus;
-  authorId: string;
-  author?: User;
-  isActive: boolean;
-  publishedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export const postSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  workspaceId: z.string(),
+  title: z.string(),
+  content: z.string(),
+  status: postStatusSchema,
+  isActive: z.boolean(),
+  publishedAt: z.string().nullable().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  user: userSchema.optional(),
+});
+export type Post = z.infer<typeof postSchema>;
 
-export interface CreatePostRequest {
-  title: string;
-  content: string;
-  status?: PostStatus;
-}
-
-export interface UpdatePostRequest {
-  title?: string;
-  content?: string;
-  status?: PostStatus;
-}
+export const createPostRequestSchema = z.object({
+  title: z.string().min(1).max(200),
+  content: z.string().max(50000),
+});
+export type CreatePostRequest = z.infer<typeof createPostRequestSchema>;
 ```
 
 **api.types.ts**
 ```typescript
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
+  z.object({
+    success: z.boolean(),
+    message: z.string(),
+    data: dataSchema,
+  });
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+export type ApiResponse<T = unknown> = z.infer<
+  ReturnType<typeof apiResponseSchema<z.ZodType<T>>>
+>;
 
-export interface ApiError {
-  message: string;
-  errors?: Array<{
-    field: string;
-    message: string;
-  }>;
-}
-
-export interface PaginationQuery {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-}
+export const paginationParamsSchema = z.object({
+  page: optionalIntegerQuerySchema(),
+  limit: optionalIntegerQuerySchema(PAGINATION.maxLimit),
+});
+export type PaginationParams = z.infer<typeof paginationParamsSchema>;
 ```
 
 #### Usage
@@ -168,40 +140,57 @@ export interface PaginationQuery {
 **In Backend:**
 ```typescript
 import type { User, CreateUserRequest } from "@kite/types";
+import { createUserRequestSchema } from "@kite/types";
 
 export class UserService {
   async createUser(data: CreateUserRequest): Promise<User> {
-    // Implementation
+    const input = createUserRequestSchema.parse(data);
+    // Persist input
   }
 }
 ```
 
 **In Frontend:**
 ```typescript
-import type { User, ApiResponse } from "@kite/types";
+import { loginRequestSchema, type User, type ApiResponse } from "@kite/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const getUsersApi = () =>
   api.get<ApiResponse<User[]>>("/api/admin/users");
+
+const loginResolver = zodResolver(loginRequestSchema);
 ```
 
-#### Adding New Types
+#### Adding New Schemas and Types
 
-1. Create or update a type file in `packages/types/src/`
-2. Export the type from the file
-3. Re-export from `packages/types/src/index.ts`
+1. Create or update a schema file in `packages/types/src/`
+2. Export Zod schemas first
+3. Infer TypeScript types with `z.infer`
+4. Re-export from `packages/types/src/index.ts`
 4. Use in backend and frontend
 
 **Example:**
 ```typescript
 // packages/types/src/event.types.ts
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  organizerId: string;
-}
+import { z } from "zod";
+
+export const eventSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  organizerId: z.string(),
+});
+export type Event = z.infer<typeof eventSchema>;
+
+export const createEventRequestSchema = eventSchema.pick({
+  title: true,
+  description: true,
+  startDate: true,
+  endDate: true,
+});
+export type CreateEventRequest = z.infer<typeof createEventRequestSchema>;
 
 // packages/types/src/index.ts
 export * from "./event.types";

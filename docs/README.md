@@ -20,8 +20,8 @@ Complete documentation for the Kite full-stack TypeScript monorepo. This guide c
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- PNPM 9.14+
+- Node.js 24
+- pnpm 11
 - PostgreSQL 14+
 
 ### Installation
@@ -71,25 +71,25 @@ pnpm dev
 ## 🛠 Tech Stack
 
 ### Backend
-- **Framework**: Express.js with TypeScript
+- **Framework**: Express.js 5 with TypeScript
 - **Database**: PostgreSQL
-- **ORM**: Prisma
+- **ORM**: Prisma 7
 - **Authentication**: JWT with httpOnly cookies
-- **Validation**: Zod shared schemas
+- **Validation**: Shared Zod schemas from `@kite/types`
 - **Email**: Postmark
 
 ### Frontend
-- **Framework**: React 18
-- **Build Tool**: Vite
+- **Framework**: React 19
+- **Build Tool**: Vite 8
 - **Routing**: React Router v7
 - **State Management**: TanStack Query + Zustand
 - **UI Library**: Tailwind CSS v4 + Radix UI
-- **Forms**: React Hook Form + Zod
+- **Forms**: React Hook Form + shared Zod schemas from `@kite/types`
 - **Variants**: CVA (class-variance-authority)
 
 ### Shared
 - **Monorepo**: PNPM Workspaces
-- **Language**: TypeScript
+- **Language**: TypeScript 6
 - **Package Namespace**: @kite/*
 
 ## 📂 Key Directories
@@ -101,7 +101,7 @@ kite/
 │   ├── admin-panel/      → React admin dashboard
 │   └── web-app/          → React web application
 ├── packages/
-│   ├── types/            → Shared TypeScript types
+│   ├── types/            → Shared Zod schemas and inferred TypeScript types
 │   ├── config/           → Shared configuration
 │   └── ui/               → Shared UI components (22+ components)
 └── docs/                 → This documentation

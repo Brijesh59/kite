@@ -9,6 +9,7 @@ This package provides:
 - **Tailwind CSS v4** - Modern CSS-first approach with shared theme
 - **CVA Variants** - Type-safe component variants
 - **Radix UI Primitives** - Accessible, unstyled components
+- **React Hook Form Components** - Typed form wrappers for shared Zod schemas
 - **Shared Theme** - OKLCH colors with light/dark mode support
 - **Utility Functions** - cn() for class merging, hooks for responsive behavior
 
@@ -67,7 +68,14 @@ import {
 - **Select** - Dropdown select with search
 - **Checkbox** - Checkbox with label
 - **Switch** - Toggle switch
-- **Form** - Form context from React Hook Form
+- **Form** - React Hook Form provider and submit wrapper
+- **FormInput** - Typed text/password/email input bound by field name
+- **FormTextarea** - Typed textarea bound by field name
+- **FormSelect** - Typed single select
+- **FormMultiSelect** - Typed multi-select
+- **FormRadioGroup** - Typed radio group
+- **FormCheckbox** - Typed checkbox
+- **FormDatePicker** - Typed date picker
 
 ### Layout Components
 - **Card** - Card container with header, content, footer
@@ -126,26 +134,40 @@ import { Button } from "@kite/ui";
 ### Form Components
 
 ```typescript
-import { Input, Label, Textarea, Select } from "@kite/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { loginRequestSchema, type LoginRequest } from "@kite/types";
+import { Button, Form } from "@kite/ui";
 
-<div className="space-y-2">
-  <Label htmlFor="email">Email</Label>
-  <Input
-    id="email"
-    type="email"
-    placeholder="Enter email"
-    aria-invalid={!!errors.email}
-  />
-</div>
+const form = useForm<LoginRequest>({
+  resolver: zodResolver(loginRequestSchema),
+  defaultValues: {
+    email: "",
+    password: "",
+    clientType: "web",
+  },
+});
 
-<div className="space-y-2">
-  <Label htmlFor="bio">Bio</Label>
-  <Textarea
-    id="bio"
-    placeholder="Tell us about yourself"
-    rows={4}
-  />
-</div>
+<Form form={form} onSubmit={(data) => console.log(data)}>
+  {({ FormInput }) => (
+    <>
+      <FormInput
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+      />
+      <FormInput
+        name="password"
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        showPasswordToggle
+      />
+      <Button type="submit">Submit</Button>
+    </>
+  )}
+</Form>
 ```
 
 ### Card Component

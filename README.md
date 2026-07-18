@@ -64,31 +64,31 @@ The admin and web login pages are prefilled with the matching demo credentials f
 ## Tech Stack
 
 ### Backend
-- **Runtime**: Node.js 18+
-- **Framework**: Express.js with TypeScript
+- **Runtime**: Node.js 24
+- **Framework**: Express.js 5 with TypeScript
 - **Database**: PostgreSQL
-- **ORM**: Prisma
+- **ORM**: Prisma 7
 - **Auth**: JWT with refresh tokens
 - **Email**: Postmark
-- **Validation**: Zod shared schemas
+- **Validation**: Shared Zod schemas from `@kite/types`
 
 ### Frontend
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite 8
 - **Routing**: React Router v7
 - **State**: TanStack Query + Zustand
 - **UI**: Tailwind CSS v4 + Radix UI
-- **Forms**: React Hook Form + Zod
+- **Forms**: React Hook Form + shared Zod schemas from `@kite/types`
 - **Components**: CVA (class-variance-authority)
 
 ### Shared Packages
-- **@kite/types**: Shared Zod schemas and inferred TypeScript types
+- **@kite/types**: Shared Zod schemas and `z.infer`-derived TypeScript types
 - **@kite/config**: Configuration and constants
 - **@kite/ui**: Complete UI component library (22+ components)
 
 ### Tools
-- **Package Manager**: PNPM 9.14+
-- **Language**: TypeScript 5.6
+- **Package Manager**: pnpm 11
+- **Language**: TypeScript 6
 - **Monorepo**: PNPM Workspaces
 
 ## Project Structure
@@ -101,7 +101,7 @@ kite/
 │   └── web-app/          # React web application
 │
 ├── packages/
-│   ├── types/            # Shared TypeScript types
+│   ├── types/            # Shared Zod schemas and inferred types
 │   ├── config/           # Shared configuration
 │   └── ui/               # Shared UI components (Tailwind v4 + CVA)
 │

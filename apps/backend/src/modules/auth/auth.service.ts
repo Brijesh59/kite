@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {
@@ -15,6 +14,7 @@ import {
   ROLES,
 } from "./auth.types";
 import type { User, AuthTokens } from "@kite/types";
+import { prisma as prismaClient } from "../../services/prisma";
 
 interface OtpDetails {
   code: string;
@@ -22,7 +22,7 @@ interface OtpDetails {
 }
 
 export class AuthService {
-  private prisma = new PrismaClient();
+  private prisma = prismaClient;
 
   /**
    * Register a new user with email and password

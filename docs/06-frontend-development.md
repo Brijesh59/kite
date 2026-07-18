@@ -6,13 +6,13 @@ This document explains how to build frontend features with React, Axios, TanStac
 
 Both frontend applications (Admin Panel and Web App) share the same tech stack and patterns:
 
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite 8
 - **HTTP Client**: Axios
 - **State Management**: TanStack Query (React Query) + Zustand
 - **Routing**: React Router v7
 - **UI**: Tailwind CSS v4 + @kite/ui (shared component library)
-- **Forms**: React Hook Form + Zod
+- **Forms**: React Hook Form + shared Zod schemas from `@kite/types`
 - **Notifications**: Sonner (toast)
 
 ## Project Structure
@@ -161,16 +161,10 @@ import type {
   Post,
   CreatePostRequest,
   UpdatePostRequest,
+  GetPostsQuery,
   ApiResponse,
   PaginatedResponse,
 } from "@kite/types";
-
-export interface GetPostsQuery {
-  page?: number;
-  limit?: number;
-  status?: "DRAFT" | "PUBLISHED" | "ALL";
-  search?: string;
-}
 
 // Get all posts
 export const getPostsApi = (query: GetPostsQuery = {}) =>
@@ -446,23 +440,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 ## Forms with React Hook Form + Zod
 
-### 1. Form Validation Schema
+### 1. Use Shared Request Schemas
 
 ```typescript
-// apps/admin-panel/src/pages/posts/schema.ts
-import { z } from "zod";
+import { createPostRequestSchema, type CreatePostRequest } from "@kite/types";
 
-export const createPostSchema = z.object({
-  title: z.string()
-    .min(1, "Title is required")
-    .max(200, "Title must be less than 200 characters"),
-  content: z.string()
-    .min(1, "Content is required"),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
-});
-
-export type CreatePostFormData = z.infer<typeof createPostSchema>;
+// The schema validates at runtime. The type is inferred from the same schema.
+type CreatePostFormData = CreatePostRequest;
 ```
+
+Define schemas in `@kite/types` first, then infer the form/API type from that schema. Page-local schemas should only exist when the UI shape is intentionally different from the API contract.
 
 ### 2. Form Component
 
@@ -471,71 +458,51 @@ export type CreatePostFormData = z.infer<typeof createPostSchema>;
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreatePost } from "@/api/posts/use-posts";
-import { Button, Input, Textarea } from "@kite/ui";
-import { createPostSchema, type CreatePostFormData } from "./schema";
+import { Button, Form } from "@kite/ui";
+import {
+  createPostRequestSchema,
+  type CreatePostRequest,
+} from "@kite/types";
 
 export default function CreatePostPage() {
   const createMutation = useCreatePost();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreatePostFormData>({
-    resolver: zodResolver(createPostSchema),
+  const form = useForm<CreatePostRequest>({
+    resolver: zodResolver(createPostRequestSchema),
     defaultValues: {
       title: "",
       content: "",
-      status: "DRAFT",
     },
   });
 
-  const onSubmit = (data: CreatePostFormData) => {
+  const onSubmit = (data: CreatePostRequest) => {
     createMutation.mutate(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div>
-        <label htmlFor="title">Title</label>
-        <Input
-          id="title"
-          {...register("title")}
-          placeholder="Enter post title"
-        />
-        {errors.title && (
-          <p className="text-sm text-red-600">{errors.title.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="content">Content</label>
-        <Textarea
-          id="content"
-          {...register("content")}
-          placeholder="Write your content..."
-          rows={10}
-        />
-        {errors.content && (
-          <p className="text-sm text-red-600">{errors.content.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label>Status</label>
-        <select {...register("status")}>
-          <option value="DRAFT">Draft</option>
-          <option value="PUBLISHED">Published</option>
-        </select>
-      </div>
-
-      <Button
-        type="submit"
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? "Creating..." : "Create Post"}
-      </Button>
-    </form>
+    <Form form={form} onSubmit={onSubmit}>
+      {({ FormInput, FormTextarea }) => (
+        <>
+          <FormInput
+            name="title"
+            label="Title"
+            placeholder="Enter post title"
+          />
+          <FormTextarea
+            name="content"
+            label="Content"
+            placeholder="Write your content..."
+            rows={10}
+          />
+          <Button
+            type="submit"
+            disabled={createMutation.isPending}
+          >
+            {createMutation.isPending ? "Creating..." : "Create Post"}
+          </Button>
+        </>
+      )}
+    </Form>
   );
 }
 ```

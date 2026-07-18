@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -40,7 +40,7 @@ export function PostFormDialog({
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    control,
     setValue,
   } = useForm<PostForm>({
     resolver: zodResolver(postSchema),
@@ -51,7 +51,7 @@ export function PostFormDialog({
     },
   });
 
-  const isPublished = watch("isPublished");
+  const isPublished = useWatch({ control, name: "isPublished" });
 
   const handleClose = () => {
     reset();

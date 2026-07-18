@@ -8,6 +8,7 @@ const routeNames: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/posts": "Posts",
   "/posts/new": "New Post",
+  "/components": "Components",
   "/profile": "Profile",
 };
 
@@ -22,6 +23,8 @@ export function SiteHeader() {
   if (!currentPageName) {
     if (location.pathname.startsWith("/posts/edit/")) {
       currentPageName = "Edit Post";
+    } else if (location.pathname.startsWith("/components/")) {
+      currentPageName = "Components";
     } else {
       currentPageName = pathSegments[pathSegments.length - 1] || "Dashboard";
       // Capitalize first letter

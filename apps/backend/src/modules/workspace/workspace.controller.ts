@@ -1,6 +1,7 @@
 import type { Response } from "express";
 import { WorkspaceService } from "./workspace.service";
 import { CatchAsyncClass } from "../../common/catch-async";
+import { getRouteParam } from "../../common/route-params";
 import type { CreateWorkspaceRequest, UpdateWorkspaceRequest, GetWorkspacesQuery } from "@kite/types";
 import type { AuthRequest } from "../../common/types";
 
@@ -27,7 +28,7 @@ export class WorkspaceController {
 
   public async getWorkspaceById(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user!.id;
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
 
     const workspace = await this.workspaceService.getWorkspaceById(id, userId);
 
@@ -53,7 +54,7 @@ export class WorkspaceController {
 
   public async updateWorkspace(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user!.id;
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
     const data: UpdateWorkspaceRequest = req.body;
 
     const workspace = await this.workspaceService.updateWorkspace(
@@ -71,7 +72,7 @@ export class WorkspaceController {
 
   public async deleteWorkspace(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user!.id;
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
 
     await this.workspaceService.deleteWorkspace(id, userId);
 

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import {
   BadRequestException,
   NotFoundException,
@@ -9,9 +8,10 @@ import {
 } from "./post.types";
 import type { Post, CreatePostData, UpdatePostRequest, GetPostsQuery } from "@kite/types";
 import { PAGINATION } from "@kite/config";
+import { prisma as prismaClient } from "../../services/prisma";
 
 export class PostService {
-  private prisma = new PrismaClient();
+  private prisma = prismaClient;
 
   /**
    * Create a new post (always starts as DRAFT)

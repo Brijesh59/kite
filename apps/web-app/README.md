@@ -1,6 +1,6 @@
 # Kite Web App
 
-User-facing web application for creating and managing posts. Built with React 18, TanStack Query, Zustand, React Router v7, and Tailwind CSS v4.
+User-facing web application for creating and managing posts. Built with React 19, TanStack Query, Zustand, React Router v7, and Tailwind CSS v4.
 
 ## Overview
 
@@ -20,15 +20,15 @@ The web app provides a platform for users to create, edit, and publish content, 
 
 ## Tech Stack
 
-- **React 18.3** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
+- **React 19** - UI library
+- **TypeScript 6** - Type safety
+- **Vite 8** - Build tool and dev server
 - **React Router v7** - Client-side routing
 - **TanStack Query v5** - Server state management
 - **Zustand** - Client state management
 - **Tailwind CSS v4** - Styling with CSS-first approach
 - **@kite/ui** - Shared component library
-- **@kite/types** - Shared TypeScript types
+- **@kite/types** - Shared Zod schemas and inferred TypeScript types
 - **@kite/config** - Shared configuration
 
 ## Project Structure
@@ -182,8 +182,8 @@ Custom React hooks:
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm package manager
+- Node.js 24
+- pnpm 11
 - Backend API running (see [backend README](../backend/README.md))
 
 ### Installation

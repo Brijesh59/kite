@@ -46,11 +46,17 @@ kite/
 
 ```yaml
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true
 ```
 
-This tells PNPM to treat all folders in `apps/` and `packages/` as workspace packages.
+This tells pnpm to treat all folders in `apps/` and `packages/` as workspace packages. `allowBuilds` is required by pnpm 11 so approved packages such as Prisma and esbuild can run install-time build scripts.
 
 ### Root package.json
 
@@ -59,15 +65,20 @@ This tells PNPM to treat all folders in `apps/` and `packages/` as workspace pac
   "name": "kite",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=11 <12"
+  },
+  "packageManager": "pnpm@11.14.0",
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "dev:backend": "pnpm --filter kite-backend dev",
-    "dev:admin": "pnpm --filter admin-panel dev",
-    "dev:web": "pnpm --filter web-app dev",
+    "dev:admin": "pnpm --filter kite-admin dev",
+    "dev:web": "pnpm --filter kite-web-app dev",
     "build": "pnpm --filter \"./apps/*\" build",
     "build:backend": "pnpm --filter kite-backend build",
-    "build:admin": "pnpm --filter admin-panel build",
-    "build:web": "pnpm --filter web-app build",
+    "build:admin": "pnpm --filter kite-admin build",
+    "build:web": "pnpm --filter kite-web-app build",
     "db:generate": "pnpm --filter kite-backend db:generate",
     "db:migrate": "pnpm --filter kite-backend db:migrate"
   }
@@ -81,7 +92,7 @@ Each workspace package has a unique name:
 - **Backend**: `kite-backend`
 - **Admin Panel**: `kite-admin`
 - **Web App**: `kite-web-app`
-- **Shared Types**: `@kite/types`
+- **Shared Schemas and Types**: `@kite/types`
 - **Shared Config**: `@kite/config`
 - **Shared UI**: `@kite/ui` (complete component library with Tailwind v4)
 
@@ -102,9 +113,9 @@ The `-w` flag installs at the workspace root.
 
 ```bash
 # Install in a specific app
-pnpm --filter backend add express
-pnpm --filter admin-panel add react-router-dom
-pnpm --filter web-app add axios
+pnpm --filter kite-backend add express
+pnpm --filter kite-admin add react-router-dom
+pnpm --filter kite-web-app add axios
 ```
 
 ### Shared Package Dependencies
@@ -182,7 +193,7 @@ pnpm build
 
 ```bash
 # Run commands in order
-pnpm --filter kite-backend build && pnpm --filter admin-panel build
+pnpm --filter kite-backend build && pnpm --filter kite-admin build
 ```
 
 ### Filtered Execution
@@ -192,7 +203,7 @@ pnpm --filter kite-backend build && pnpm --filter admin-panel build
 pnpm --filter kite-backend dev
 
 # Run in multiple specific packages
-pnpm --filter admin-panel --filter web-app build
+pnpm --filter kite-admin --filter kite-web-app build
 ```
 
 ## Environment Variables
@@ -231,10 +242,11 @@ build/
 
 ## Initial Setup
 
-### 1. Install PNPM
+### 1. Enable pnpm 11
 
 ```bash
-npm install -g pnpm
+corepack enable
+corepack prepare pnpm@11.14.0 --activate
 ```
 
 ### 2. Install Dependencies

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import type {
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
@@ -12,12 +11,13 @@ import {
   BadRequestException,
   NotFoundException,
 } from "../../common/app-error";
+import { prisma as prismaClient, type PrismaService } from "../../services/prisma";
 
 export class WorkspaceService {
-  private prisma: PrismaClient;
+  private prisma: PrismaService;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prismaClient;
   }
 
   async createDefaultWorkspace(

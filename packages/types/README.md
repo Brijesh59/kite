@@ -228,7 +228,7 @@ import { createCommentRequestSchema } from "@kite/types";
 
 ## Type Mirroring
 
-Types should mirror Prisma schema:
+Schemas should mirror Prisma models and API JSON shape. Dates are represented as strings in shared schemas because HTTP responses serialize Prisma `DateTime` values.
 
 ```prisma
 // apps/backend/prisma/schema.prisma
@@ -245,62 +245,67 @@ model User {
 
 ```typescript
 // packages/types/src/user.types.ts
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  isActive: boolean;
-  createdAt: string;  // Note: Dates as strings for JSON serialization
-  updatedAt: string;
-}
+export const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  role: userRoleSchema,
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type User = z.infer<typeof userSchema>;
 ```
 
 ## Common Patterns
 
 ### Request/Response Pattern
 ```typescript
-// Request DTO
-export interface CreatePostRequest {
-  title: string;
-  content: string;
-}
+export const createPostRequestSchema = z.object({
+  title: z.string().min(1).max(200),
+  content: z.string().max(50000),
+});
+export type CreatePostRequest = z.infer<typeof createPostRequestSchema>;
 
-// Response includes full entity
-export interface Post extends CreatePostRequest {
-  id: string;
-  authorId: string;
-  status: PostStatus;
-  createdAt: string;
-  updatedAt: string;
-}
+export const postSchema = createPostRequestSchema.extend({
+  id: z.string(),
+  userId: z.string(),
+  workspaceId: z.string(),
+  status: postStatusSchema,
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type Post = z.infer<typeof postSchema>;
 ```
 
 ### Pagination Pattern
 ```typescript
-export interface PaginationQuery {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-}
+export const paginationParamsSchema = z.object({
+  page: optionalIntegerQuerySchema(),
+  limit: optionalIntegerQuerySchema(PAGINATION.maxLimit),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
+});
+export type PaginationParams = z.infer<typeof paginationParamsSchema>;
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+export const paginatedResponseSchema = <T extends z.ZodType>(itemSchema: T) =>
+  z.object({
+    items: z.array(itemSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+    totalPages: z.number(),
+  });
 ```
 
 ### Filter Pattern
 ```typescript
-export interface GetPostsQuery extends PaginationQuery {
-  status?: PostStatus | "ALL";
-  search?: string;
-  authorId?: string;
-}
+export const getPostsQuerySchema = paginationParamsSchema.extend({
+  status: z.enum(["DRAFT", "PUBLISHED", "ALL"]).optional(),
+  search: z.string().min(2).max(100).optional(),
+  userId: z.string().uuid().optional(),
+});
+export type GetPostsQuery = z.infer<typeof getPostsQuerySchema>;
 ```
 
 ## Related Documentation

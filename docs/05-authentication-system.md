@@ -98,37 +98,23 @@ export const loginApi = (data: LoginRequest) =>
   });
 ```
 
-**Backend Validation** ([apps/backend/src/modules/auth/auth.controller.ts](apps/backend/src/modules/auth/auth.controller.ts#L25-L35)):
+**Backend Route Validation** ([apps/backend/src/modules/auth/auth.routes.ts](apps/backend/src/modules/auth/auth.routes.ts)):
 
 ```typescript
-public async login(req: Request, res: Response) {
-  const { email, mobile, password, otp, clientType } = req.body;
+router.post("/login", validate(authValidation.login), authController.login);
+```
 
-  const result = await this.authService.login({
-    email,
-    mobile,
-    password,
-    otp,
-  });
+`authValidation.login` uses the shared `loginRequestSchema` from `@kite/types`, so the same Zod contract powers frontend form type safety and backend request validation.
 
-  // Admin panel requires ADMIN role
-  if (clientType === 'admin' && result.user.role !== 'ADMIN') {
-    return res.status(403).json({
-      message: "Access denied. Admin privileges required.",
-    });
-  }
+```typescript
+// apps/backend/src/modules/auth/auth.validation.ts
+import { loginRequestSchema } from "@kite/types";
 
-  // Set cookies with appropriate prefix
-  this.setAuthCookies(res, result.tokens, clientType);
-
-  res.status(200).json({
-    message: "Login successful",
-    data: {
-      user: omit(result.user, ["password"]),
-      tokens: result.tokens,
-    },
-  });
-}
+export const authValidation = {
+  login: {
+    body: loginRequestSchema,
+  },
+};
 ```
 
 ### 3. Cookie Management

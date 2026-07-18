@@ -1,0 +1,17 @@
+- upgrade packages
+- sidebar menu called components, redering components and forms etc by showing secondary sidebar and listing all the compoennts, button, input and all their props etc and also showing an exmaple to use it. this is for all the components.
+- db conntion to use less pool using lru cache etc
+- Social login (Google)
+- Whole app redesign to look premium
+- Landing pages (fully responsive, with SEO)
+- infra as code
+- github (ci/cd) - minimal setup to get up and running quickly
+- awesome components
+  - date range picker
+  - search-select-create
+- expo app
+- documentation
+- follow all best practices
+- skills/agents etc ...
+- billing (free / pro)
+- rbac auth

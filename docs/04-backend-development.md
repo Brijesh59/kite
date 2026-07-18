@@ -172,19 +172,19 @@ export const commentValidation = {
 Create `apps/backend/src/modules/comments/comment.service.ts`:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
 import type {
   Comment,
   CreateCommentRequest,
   UpdateCommentRequest,
   GetCommentsQuery,
 } from "./comment.types";
+import { prisma as prismaClient, type PrismaService } from "../../services/prisma";
 
 export class CommentService {
-  private prisma: PrismaClient;
+  private prisma: PrismaService;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prismaClient;
   }
 
   async createComment(
@@ -556,12 +556,22 @@ import { validate } from "../../middleware/validation";
 
 router.post(
   "/comments",
-  validate(commentValidation.create),
+  validate({
+    body: createCommentRequestSchema,
+  }),
   controller.createComment
 );
 ```
 
-Validates request body, params, and query against Zod schemas.
+`validate` accepts route-level Zod schemas for `body`, `params`, and `query`. Use shared schemas from `@kite/types` in the module validation file, then pass the specific route validation object in routes:
+
+```typescript
+validate({
+  params: uuidParamSchema,
+  body: updateCommentRequestSchema,
+  query: getCommentsQuerySchema,
+});
+```
 
 ### 4. Error Handling
 

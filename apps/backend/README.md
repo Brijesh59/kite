@@ -21,7 +21,7 @@ A simplified, production-ready Node.js Express backend with TypeScript, featurin
 - **Tag-based Organization** for posts
 
 ### Security & Production Features
-- **Route-level Validation** using shared Zod schemas
+- **Route-level Validation** using shared Zod schemas from `@kite/types`
 - **Comprehensive Error Handling** with structured responses
 - **HTTP Request Logging** with performance monitoring
 - **Rate Limiting** protection
@@ -53,15 +53,15 @@ backend/
 │   │   │   ├── auth.controller.ts  # Auth request handlers
 │   │   │   ├── auth.service.ts     # Auth business logic
 │   │   │   ├── auth.routes.ts      # Auth route definitions
-│   │   │   ├── auth.types.ts       # Auth TypeScript interfaces
-│   │   │   └── validation.ts       # Auth validation schemas
+│   │   │   ├── auth.types.ts       # Auth schema/type re-exports
+│   │   │   └── auth.validation.ts  # Auth Zod schema bindings
 │   │   │
 │   │   └── post/                # Post management module
 │   │       ├── post.controller.ts  # Post request handlers
 │   │       ├── post.service.ts     # Post business logic
 │   │       ├── post.routes.ts      # Post route definitions
-│   │       ├── post.types.ts       # Post TypeScript interfaces
-│   │       └── validation.ts       # Post validation schemas
+│   │       ├── post.types.ts       # Post schema/type re-exports
+│   │       └── post.validation.ts  # Post Zod schema bindings
 │   │
 │   ├── services/                # External services
 │   │   └── notification.service.ts # Email/SMS notifications
@@ -77,6 +77,7 @@ backend/
 ├── logs/                       # Application logs
 ├── testing/                    # Test files
 │
+├── prisma.config.ts            # Prisma 7 datasource and migration config
 ├── package.json                # Dependencies & scripts
 ├── tsconfig.json              # TypeScript configuration
 ├── docker-compose.yml         # PostgreSQL Docker setup
@@ -85,19 +86,19 @@ backend/
 
 ## 🛠️ Technology Stack
 
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Express.js
-- **Database**: PostgreSQL with Prisma ORM
+- **Runtime**: Node.js 24 with TypeScript 6
+- **Framework**: Express.js 5
+- **Database**: PostgreSQL with Prisma 7 ORM
 - **Authentication**: JWT with bcrypt hashing
-- **Validation**: Zod schemas at route level
+- **Validation**: Shared Zod schemas at route level
 - **Logging**: Winston with daily rotation
 - **Development**: tsx for hot reloading
 
 ## 📋 Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js 24
 - PostgreSQL database
-- pnpm package manager
+- pnpm 11
 - Docker (optional, for database setup)
 
 ## 🚀 Quick Start

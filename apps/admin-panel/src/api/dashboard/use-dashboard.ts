@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useUsers } from "@/api/users/use-users";
 import { usePosts } from "@/api/posts/use-posts";
+import { PAGINATION } from "@kite/config";
 import type { User, Post } from "@kite/types";
 
 export interface DashboardStats {
@@ -33,12 +34,12 @@ export interface DashboardStats {
 export const useDashboardStats = () => {
   // Get all users for stats
   const { data: usersResponse, isLoading: usersLoading } = useUsers({
-    limit: 1000, // Get all users
+    limit: PAGINATION.maxLimit,
   });
 
   // Get all posts for stats
   const { data: postsResponse, isLoading: postsLoading } = usePosts({
-    limit: 1000, // Get all posts
+    limit: PAGINATION.maxLimit,
   });
 
   return useQuery({
@@ -93,14 +94,14 @@ export const useDashboardStats = () => {
       ).length;
 
       const stats: DashboardStats = {
-        totalUsers: users.length,
+        totalUsers: usersResponse?.pagination.total ?? users.length,
         usersByRole: {
           admin: usersByRole.admin || 0,
           member: usersByRole.member || 0,
           organiser: usersByRole.organiser || 0,
           artist: usersByRole.artist || 0,
         },
-        totalPosts: posts.length,
+        totalPosts: postsResponse?.pagination.total ?? posts.length,
         publishedPosts: publishedPostsCount,
         recentUsers,
         recentPosts,

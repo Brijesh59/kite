@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AdminService } from "./admin.service";
 import { CatchAsyncClass } from "../../common/catch-async";
+import { getRouteParam } from "../../common/route-params";
 import {
   CreateUserRequest,
   UpdateUserRequest,
@@ -38,7 +39,7 @@ export class AdminController {
    * Get user by ID
    */
   public async getUserById(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
 
     const user = await this.adminService.getUserById(id);
 
@@ -70,7 +71,7 @@ export class AdminController {
    * Update user
    */
   public async updateUser(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
     const updateData: UpdateUserRequest = req.body;
 
     const user = await this.adminService.updateUser(id, updateData);
@@ -87,7 +88,7 @@ export class AdminController {
    * Delete user
    */
   public async deleteUser(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
 
     await this.adminService.deleteUser(id);
 
@@ -117,7 +118,7 @@ export class AdminController {
    * Update post
    */
   public async updatePost(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
     const updateData: UpdatePostData = req.body;
 
     const post = await this.adminService.updatePost(id, updateData);
@@ -134,7 +135,7 @@ export class AdminController {
    * Delete post
    */
   public async deletePost(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = getRouteParam(req, "id");
 
     await this.adminService.deletePost(id);
 

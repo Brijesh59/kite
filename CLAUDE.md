@@ -8,7 +8,7 @@ This file contains essential information for AI assistants (like Claude) working
 
 **Kite** is a production-ready full-stack TypeScript monorepo featuring:
 - **Backend**: Express.js + TypeScript + Prisma + PostgreSQL
-- **Frontend Apps**: React 18 + Vite + TanStack Query + Zustand
+- **Frontend Apps**: React 19 + Vite 8 + TanStack Query + Zustand
   - Admin Panel (port 5173)
   - Web App (port 5174)
 - **Shared Packages**: @kite/types, @kite/config, @kite/ui (22+ components)
@@ -43,7 +43,7 @@ docs/
 | Adding a new backend endpoint | [docs/04-backend-development.md](docs/04-backend-development.md) |
 | Understanding authentication flow | [docs/05-authentication-system.md](docs/05-authentication-system.md) |
 | Creating a new frontend page | [docs/06-frontend-development.md](docs/06-frontend-development.md) |
-| Adding a shared type | [docs/03-shared-packages.md](docs/03-shared-packages.md#1-kiteptypes) |
+| Adding a shared schema/type | [docs/03-shared-packages.md](docs/03-shared-packages.md#1-kiteptypes) |
 | Creating a UI component | [docs/03-shared-packages.md](docs/03-shared-packages.md#3-kiteui) |
 | Running database migrations | [docs/07-development-workflow.md](docs/07-development-workflow.md) |
 | Understanding backend structure | [apps/backend/README.md](apps/backend/README.md) |
@@ -61,7 +61,7 @@ docs/
 
 #### Backend (Express.js)
 - **Framework**: Express.js with TypeScript
-- **Validation**: Zod shared schemas
+- **Validation**: Shared Zod schemas from `@kite/types`
 - **Module Structure**: Each feature has `.types.ts`, `.validation.ts`, `.service.ts`, `.controller.ts`, `.routes.ts`
 - **Database**: PostgreSQL via Prisma ORM
 - **Port**: 9000 (configurable via PORT env var)
@@ -71,7 +71,7 @@ docs/
 - **Routing**: React Router v7
 - **Server State**: TanStack Query v5
 - **Client State**: Zustand
-- **Forms**: React Hook Form + Zod
+- **Forms**: React Hook Form + Zod schemas from `@kite/types`
 - **Styling**: Tailwind CSS v4 (CSS-first approach with `@import "tailwindcss"`)
 
 #### Shared UI (@kite/ui)
@@ -140,7 +140,7 @@ kite/
 │           └── utils/        # Utilities (api, format-date)
 │
 └── packages/
-    ├── types/                # Shared TypeScript types
+    ├── types/                # Shared Zod schemas and inferred TypeScript types
     │   └── src/
     │       ├── user.types.ts
     │       ├── auth.types.ts
@@ -319,7 +319,7 @@ VITE_APP_NAME=Kite
 
 1. **Express.js, NOT NestJS**: The backend uses Express.js with TypeScript, not NestJS. Don't suggest NestJS patterns.
 
-2. **Zod, NOT class-validator**: Backend validation uses shared Zod schemas from `@kite/types`, not class-validator decorators.
+2. **Zod only**: Backend validation uses shared Zod schemas from `@kite/types`. Frontend forms use the same schemas with `zodResolver`.
 
 3. **Tailwind CSS v4**: Uses CSS-first approach with `@import "tailwindcss"` and `@theme inline` directive.
 
@@ -340,7 +340,7 @@ VITE_APP_NAME=Kite
 ### 🚫 Common Mistakes to Avoid
 
 1. ❌ **Don't use NestJS decorators** (use Express route handlers)
-2. ❌ **Don't use class-validator** (use shared Zod schemas)
+2. ❌ **Don't add another validation/type system** (use shared Zod schemas)
 3. ❌ **Don't use Tailwind config.js** (use CSS `@theme inline` in v4)
 4. ❌ **Don't mix cookie names** (admin vs web app)
 5. ❌ **Don't forget workspace:* protocol** for internal deps
@@ -358,7 +358,7 @@ VITE_APP_NAME=Kite
 4. ✅ **Import UI components** from @kite/ui
 5. ✅ **Use TanStack Query** for server state
 6. ✅ **Use Zustand** for client state
-7. ✅ **Validate on both** frontend and backend with shared Zod schemas
+7. ✅ **Validate on both** frontend and backend with shared Zod schemas and `z.infer` types
 8. ✅ **Keep components small** and focused
 9. ✅ **Write self-documenting code** with clear names
 10. ✅ **Test manually** after changes

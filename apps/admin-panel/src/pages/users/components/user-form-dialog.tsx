@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,11 +39,16 @@ export function UserFormDialog({
   onSubmit,
   isLoading = false,
 }: UserFormDialogProps) {
-  const [formData, setFormData] = useState({
+  const emptyFormData = {
     name: "",
     email: "",
     password: "",
     role: "USER" as UserRole,
+  };
+
+  const [draft, setDraft] = useState({
+    key: "new",
+    data: emptyFormData,
   });
 
   const isEdit = !!user;
@@ -60,23 +65,34 @@ export function UserFormDialog({
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
+  const formKey = user?.id ?? "new";
+  const initialFormData = user
+    ? {
         name: user.name,
         email: user.email,
         password: "",
         role: mapToBackendRole(user.role),
-      });
-    } else {
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        role: "USER",
-      });
+      }
+    : emptyFormData;
+  const formData = draft.key === formKey ? draft.data : initialFormData;
+
+  const updateFormData = (data: Partial<typeof formData>) => {
+    setDraft({
+      key: formKey,
+      data: {
+        ...formData,
+        ...data,
+      },
+    });
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setDraft({ key: "new", data: emptyFormData });
     }
-  }, [user, open]);
+
+    onOpenChange(nextOpen);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +119,7 @@ export function UserFormDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit User" : "Add New User"}</DialogTitle>
@@ -119,9 +135,7 @@ export function UserFormDialog({
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => updateFormData({ name: e.target.value })}
               required
             />
           </div>
@@ -131,9 +145,7 @@ export function UserFormDialog({
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              onChange={(e) => updateFormData({ email: e.target.value })}
               required
             />
           </div>
@@ -145,9 +157,7 @@ export function UserFormDialog({
               id="password"
               type="password"
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => updateFormData({ password: e.target.value })}
               required={!isEdit}
             />
           </div>
@@ -156,7 +166,7 @@ export function UserFormDialog({
             <Select
               value={formData.role}
               onValueChange={(value: UserRole) =>
-                setFormData({ ...formData, role: value })
+                updateFormData({ role: value })
               }
             >
               <SelectTrigger>
@@ -174,7 +184,7 @@ export function UserFormDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
               disabled={isLoading}
             >
               Cancel

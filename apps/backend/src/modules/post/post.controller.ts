@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { PostService } from "./post.service";
 import { CatchAsyncClass } from "../../common/catch-async";
+import { getRouteParam } from "../../common/route-params";
 import type { AuthRequest } from "../../common/types";
 import {
   CreatePostData,
@@ -55,7 +56,7 @@ export class PostController {
    */
   async getPostById(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const postId = req.params.id;
+    const postId = getRouteParam(req, "id");
 
     const post = await this.postService.getPostById(postId, userId);
 
@@ -71,7 +72,7 @@ export class PostController {
    */
   async updatePost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const postId = req.params.id;
+    const postId = getRouteParam(req, "id");
     const data: UpdatePostRequest = req.body;
 
     const post = await this.postService.updatePost(postId, userId, data);
@@ -88,7 +89,7 @@ export class PostController {
    */
   async publishPost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const postId = req.params.id;
+    const postId = getRouteParam(req, "id");
 
     const post = await this.postService.publishPost(postId, userId);
 
@@ -104,7 +105,7 @@ export class PostController {
    */
   async unpublishPost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const postId = req.params.id;
+    const postId = getRouteParam(req, "id");
 
     const post = await this.postService.unpublishPost(postId, userId);
 
@@ -120,7 +121,7 @@ export class PostController {
    */
   async deletePost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
-    const postId = req.params.id;
+    const postId = getRouteParam(req, "id");
 
     await this.postService.deletePost(postId, userId);
 

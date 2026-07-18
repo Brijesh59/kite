@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import {
   CreateUserRequest,
@@ -11,12 +11,13 @@ import {
   Post,
 } from "./admin.types";
 import { User } from "../auth/auth.types";
+import { prisma as prismaClient, type PrismaService } from "../../services/prisma";
 
 export class AdminService {
-  private prisma: PrismaClient;
+  private prisma: PrismaService;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prismaClient;
   }
 
   /**
@@ -28,6 +29,7 @@ export class AdminService {
       limit = 10,
       search,
       role,
+      isActive,
       sortBy = "createdAt",
       sortOrder = "desc",
     } = query;
@@ -47,6 +49,10 @@ export class AdminService {
 
     if (role) {
       where.role = role;
+    }
+
+    if (isActive !== undefined) {
+      where.isActive = isActive;
     }
 
     // Build order by clause

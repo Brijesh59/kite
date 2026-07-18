@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
 import type {
   UserProfileData,
   UserProfileResponse,
 } from "./profile.types";
+import { prisma as prismaClient, type PrismaService } from "../../services/prisma";
 
 export class ProfileService {
-  private prisma: PrismaClient;
+  private prisma: PrismaService;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prismaClient;
   }
 
   async createOrUpdateProfile(

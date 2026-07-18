@@ -573,16 +573,16 @@ pnpm --filter web-app build
 
 **Backend Dockerfile:**
 ```dockerfile
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@11.14.0 --activate
 RUN pnpm install
 COPY . .
 RUN pnpm --filter kite-backend build
 
-FROM node:18-alpine
+FROM node:24-alpine
 WORKDIR /app
 COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/package.json ./

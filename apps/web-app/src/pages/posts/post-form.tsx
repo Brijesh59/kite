@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
 import { TiptapEditor } from "@/components/editor/tiptap-editor";
@@ -15,23 +15,39 @@ export default function PostFormPage() {
   const navigate = useNavigate();
   const isEditMode = !!id;
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [draft, setDraft] = useState({
+    key: "new",
+    title: "",
+    content: "",
+  });
 
   const { currentWorkspace } = useWorkspaceStore();
 
   const { data: postData, isLoading } = usePost(id || "");
   const createMutation = useCreatePost();
   const updateMutation = useUpdatePost();
+  const post = isEditMode ? postData?.data.data.post : undefined;
+  const draftKey = post?.id ?? "new";
+  const title = draft.key === draftKey ? draft.title : post?.title ?? "";
+  const content =
+    draft.key === draftKey ? draft.content : post?.content ?? "";
 
-  // Load post data for edit mode
-  useEffect(() => {
-    if (isEditMode && postData?.data.data.post) {
-      const post = postData.data.data.post;
-      setTitle(post.title);
-      setContent(post.content);
-    }
-  }, [isEditMode, postData]);
+  const setTitle = (value: string) => {
+    setDraft((current) => ({
+      key: draftKey,
+      title: value,
+      content:
+        current.key === draftKey ? current.content : post?.content ?? "",
+    }));
+  };
+
+  const setContent = (value: string) => {
+    setDraft((current) => ({
+      key: draftKey,
+      title: current.key === draftKey ? current.title : post?.title ?? "",
+      content: value,
+    }));
+  };
 
   const handleSave = () => {
     if (!title.trim()) {
