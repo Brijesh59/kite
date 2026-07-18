@@ -8,18 +8,8 @@ export type {
   ResetPasswordRequest,
   ChangePasswordRequest,
   Session,
+  SendOtpRequest,
+  VerifyOtpRequest,
 } from "@kite/types";
 
 export { ROLES, type Role } from "@kite/config";
-
-// Auth-specific types (not in shared package)
-export interface SendOtpRequest {
-  email?: string;
-  mobile?: string;
-}
-
-export interface VerifyOtpRequest {
-  email?: string;
-  mobile?: string;
-  otp: string;
-}

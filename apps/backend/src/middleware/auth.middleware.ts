@@ -58,7 +58,7 @@ export const authMiddleware = (
     } as User;
 
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({
       message: "Access Token is invalid or expired",
     });

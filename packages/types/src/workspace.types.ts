@@ -1,52 +1,106 @@
-import type { User } from "./user.types";
+import { z } from "zod";
+import { PAGINATION, WORKSPACE_LIMITS } from "@kite/config";
+import { userSchema } from "./user.types";
+import {
+  optionalBooleanQuerySchema,
+  optionalIntegerQuerySchema,
+} from "./schema-helpers";
 
-export interface Workspace {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string | null;
-  ownerId: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  owner?: User;
-  _count?: {
-    members: number;
-    posts: number;
-  };
-}
+export const workspaceMemberRoleSchema = z.enum(["OWNER", "ADMIN", "MEMBER"]);
+export type WorkspaceMemberRole = z.infer<typeof workspaceMemberRoleSchema>;
 
-export interface WorkspaceMember {
-  id: string;
-  workspaceId: string;
-  userId: string;
-  role: WorkspaceMemberRole;
-  joinedAt: string;
-  updatedAt: string;
-  workspace?: Workspace;
-  user?: User;
-}
+export const workspaceCountSchema = z.object({
+  members: z.number(),
+  posts: z.number(),
+});
 
-export type WorkspaceMemberRole = "OWNER" | "ADMIN" | "MEMBER";
+export const workspaceSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  description: z.string().nullable().optional(),
+  ownerId: z.string(),
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  owner: userSchema.optional(),
+  _count: workspaceCountSchema.optional(),
+});
+export type Workspace = z.infer<typeof workspaceSchema>;
 
-export interface CreateWorkspaceRequest {
-  name: string;
-  description?: string;
-}
+export const workspaceMemberSchema = z.object({
+  id: z.string(),
+  workspaceId: z.string(),
+  userId: z.string(),
+  role: workspaceMemberRoleSchema,
+  joinedAt: z.string(),
+  updatedAt: z.string(),
+  workspace: workspaceSchema.optional(),
+  user: userSchema.optional(),
+});
+export type WorkspaceMember = z.infer<typeof workspaceMemberSchema>;
 
-export interface UpdateWorkspaceRequest {
-  name?: string;
-  description?: string;
-  slug?: string;
-}
+export const createWorkspaceRequestSchema = z.object({
+  name: z
+    .string()
+    .min(
+      WORKSPACE_LIMITS.nameMinLength,
+      `Workspace name must be at least ${WORKSPACE_LIMITS.nameMinLength} characters`
+    )
+    .max(
+      WORKSPACE_LIMITS.nameMaxLength,
+      `Workspace name must not exceed ${WORKSPACE_LIMITS.nameMaxLength} characters`
+    ),
+  description: z
+    .string()
+    .max(
+      WORKSPACE_LIMITS.descriptionMaxLength,
+      `Description must not exceed ${WORKSPACE_LIMITS.descriptionMaxLength} characters`
+    )
+    .nullable()
+    .optional(),
+});
+export type CreateWorkspaceRequest = z.infer<typeof createWorkspaceRequestSchema>;
 
-export interface GetWorkspacesQuery {
-  page?: number;
-  limit?: number;
-  search?: string;
-  isActive?: boolean;
-}
+export const updateWorkspaceRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .min(
+        WORKSPACE_LIMITS.nameMinLength,
+        `Workspace name must be at least ${WORKSPACE_LIMITS.nameMinLength} characters`
+      )
+      .max(
+        WORKSPACE_LIMITS.nameMaxLength,
+        `Workspace name must not exceed ${WORKSPACE_LIMITS.nameMaxLength} characters`
+      )
+      .optional(),
+    description: z
+      .string()
+      .max(
+        WORKSPACE_LIMITS.descriptionMaxLength,
+        `Description must not exceed ${WORKSPACE_LIMITS.descriptionMaxLength} characters`
+      )
+      .nullable()
+      .optional(),
+    slug: z.string().optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided for update",
+  });
+export type UpdateWorkspaceRequest = z.infer<typeof updateWorkspaceRequestSchema>;
 
-export interface WorkspaceWithRole extends Workspace {
-  memberRole: WorkspaceMemberRole;
-}
+export const getWorkspacesQuerySchema = z.object({
+  page: optionalIntegerQuerySchema(PAGINATION.maxLimit),
+  limit: optionalIntegerQuerySchema(PAGINATION.maxLimit),
+  search: z.string().optional(),
+  isActive: optionalBooleanQuerySchema,
+  sortBy: z.enum(["name", "slug", "createdAt", "updatedAt"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
+});
+export type GetWorkspacesQuery = z.infer<typeof getWorkspacesQuerySchema>;
+
+export const workspaceWithRoleSchema = workspaceSchema.extend({
+  memberRole: workspaceMemberRoleSchema,
+});
+export type WorkspaceWithRole = z.infer<typeof workspaceWithRoleSchema>;

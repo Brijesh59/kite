@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { ProfileService } from "./profile.service";
 import { CatchAsyncClass } from "../../common/catch-async";
 import type { AuthRequest } from "../../common/types";

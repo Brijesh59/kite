@@ -19,7 +19,7 @@ const createRateLimiter = (windowMs: number, max: number, message?: string) => {
     message: message || "Too many requests, please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
-    handler: (req: Request, res: Response) => {
+    handler: (_req: Request, _res: Response) => {
       throw new AppError(message || "Rate limit exceeded", 429);
     },
   });

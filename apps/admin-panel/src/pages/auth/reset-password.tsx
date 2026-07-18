@@ -1,21 +1,18 @@
-import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { resetPasswordRequestSchema } from "@kite/types";
 import { useResetPassword } from "@/api/auth/use-auth";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Form } from "@kite/ui";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    password: resetPasswordRequestSchema.shape.password,
+    confirmPassword: resetPasswordRequestSchema.shape.password,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -25,17 +22,11 @@ const resetPasswordSchema = z
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const resetPassword = useResetPassword();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordForm>({
+  const form = useForm<ResetPasswordForm>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
@@ -77,9 +68,16 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
+            <img
+              src="/logo.png"
+              alt="Kite logo"
+              className="size-full scale-150 object-cover"
+            />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">Kite Admin</h1>
-          <p className="mt-2 text-gray-600">Reset your password</p>
+          <p className="text-gray-600">Reset your password</p>
         </div>
 
         <Card>
@@ -88,84 +86,42 @@ export default function ResetPasswordPage() {
             <CardDescription>Enter your new password below</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
+            <Form form={form} onSubmit={onSubmit}>
+              {({ FormInput }) => (
+                <>
+                  <FormInput
+                    name="password"
+                    label="New Password"
                     placeholder="Enter new password"
-                    {...register("password")}
+                    autoComplete="new-password"
+                    showPasswordToggle
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
+                  <FormInput
+                    name="confirmPassword"
+                    label="Confirm Password"
                     placeholder="Confirm new password"
-                    {...register("confirmPassword")}
+                    autoComplete="new-password"
+                    showPasswordToggle
                   />
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    type="submit"
+                    className="w-full"
+                    disabled={resetPassword.isPending}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {resetPassword.isPending ? "Resetting..." : "Reset Password"}
                   </Button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-600">
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
-              </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={resetPassword.isPending}
-              >
-                {resetPassword.isPending ? "Resetting..." : "Reset Password"}
-              </Button>
-
-              <div className="text-center">
-                <Link to="/login">
-                  <Button variant="ghost" className="w-full">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Login
-                  </Button>
-                </Link>
-              </div>
-            </form>
+                  <div className="text-center">
+                    <Link to="/login">
+                      <Button variant="ghost" className="w-full">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Login
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
+            </Form>
           </CardContent>
         </Card>
       </div>

@@ -1,7 +1,9 @@
+import type { ReactElement } from "react";
+
 export interface EmptyStateProps {
   title: string;
   description?: string;
-  icon?: JSX.Element;
+  icon?: ReactElement;
   action?: {
     label: string;
     onClick: () => void;

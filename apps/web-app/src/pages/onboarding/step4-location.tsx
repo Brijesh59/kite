@@ -2,6 +2,7 @@ import { useUpdateProfile } from "@/api/profile/use-profile";
 import type { OnboardingFormData } from "./index";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { InterestOption } from "@kite/config";
 
 interface Step4LocationProps {
   data: OnboardingFormData;
@@ -22,7 +23,10 @@ export function Step4Location({
       bio: data.bio || undefined,
       avatar: data.avatar || undefined,
       metadata: {
-        interests: data.interests.length > 0 ? data.interests : undefined,
+        interests:
+          data.interests.length > 0
+            ? (data.interests as InterestOption[])
+            : undefined,
         location: data.location || undefined,
         address:
           data.address.city || data.address.state || data.address.country

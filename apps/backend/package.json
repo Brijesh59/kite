@@ -26,20 +26,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.10.1",
     "@kite/config": "workspace:*",
     "@kite/types": "workspace:*",
+    "@prisma/client": "^6.10.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "postmark": "^4.0.5",
     "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -47,7 +47,6 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.23",
     "@types/jest": "^30.0.0",
-    "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^16.18.126",

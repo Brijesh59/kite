@@ -66,7 +66,7 @@ export const registerApi = (data: RegisterRequest) =>
 
 **Backend Flow** ([apps/backend/src/modules/auth/auth.controller.ts](apps/backend/src/modules/auth/auth.controller.ts)):
 
-1. Validate request with Joi
+1. Validate request with shared Zod schemas
 2. Hash password with bcrypt
 3. Create user in database (default role: USER)
 4. Generate JWT tokens
@@ -618,18 +618,18 @@ const JWT_SECRET = "secret123";  // Hardcoded secret
 
 ✅ **Do:**
 ```typescript
-const passwordSchema = Joi.string()
+const passwordSchema = z
+  .string()
   .min(8)
-  .pattern(/[A-Z]/)  // Uppercase
-  .pattern(/[a-z]/)  // Lowercase
-  .pattern(/[0-9]/)  // Number
-  .pattern(/[@$!%*?&]/)  // Special char
-  .required();
+  .regex(/[A-Z]/) // Uppercase
+  .regex(/[a-z]/) // Lowercase
+  .regex(/[0-9]/) // Number
+  .regex(/[@$!%*?&]/); // Special char
 ```
 
 ❌ **Don't:**
 ```typescript
-const passwordSchema = Joi.string().min(6);  // Too weak
+const passwordSchema = z.string().min(6); // Too weak
 ```
 
 ### 4. Token Expiration

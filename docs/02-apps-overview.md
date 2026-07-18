@@ -20,7 +20,7 @@ The Express.js API server that powers both frontend applications.
 - Multi-client authentication (admin vs web)
 - Database migrations with Prisma
 - Email notifications via Postmark
-- Input validation with Joi
+- Input validation with shared Zod schemas
 - Error handling middleware
 
 #### Directory Structure

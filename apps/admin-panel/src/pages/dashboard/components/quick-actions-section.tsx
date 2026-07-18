@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
   UserPlusIcon,
   PlusIcon,
   SettingsIcon,
@@ -82,12 +82,12 @@ export function QuickActionsSection() {
         <CardDescription>Common administrative tasks</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {quickActions.map((action) => (
             <Button
               key={action.id}
               variant={action.variant || "outline"}
-              className={`h-auto p-4 justify-start transition-all duration-200 ${
+              className={`h-auto justify-start p-4 transition-all duration-200 ${
                 hoveredActionId === action.id
                   ? "scale-[1.02] shadow-md"
                   : "hover:scale-[1.01]"
@@ -96,13 +96,13 @@ export function QuickActionsSection() {
               onMouseEnter={() => setHoveredActionId(action.id)}
               onMouseLeave={() => setHoveredActionId(null)}
             >
-              <div className="flex items-start space-x-3 text-left w-full">
-                <div className="flex-shrink-0 mt-0.5">{action.icon}</div>
+              <div className="flex w-full items-start gap-3 text-left">
+                <div className="mt-0.5 shrink-0">{action.icon}</div>
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-medium leading-5">
                     {action.title}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1 leading-4">
+                  <div className="mt-1 text-xs leading-4 text-muted-foreground">
                     {action.description}
                   </div>
                 </div>

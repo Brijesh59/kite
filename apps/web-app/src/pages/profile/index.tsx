@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { updateProfileRequestSchema } from "@kite/types";
 import { useAuthStore } from "@/utils/auth-store";
 import { INTEREST_OPTIONS } from "@kite/config";
 import { useState } from "react";
@@ -10,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const profileSchema = z.object({
-  bio: z.string().max(500).optional(),
-  avatar: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  bio: updateProfileRequestSchema.shape.bio,
+  avatar: updateProfileRequestSchema.shape.avatar,
   location: z.string().optional(),
 });
 

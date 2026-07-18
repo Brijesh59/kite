@@ -12,8 +12,8 @@ Each module follows this structure:
 
 ```
 src/modules/<module-name>/
-├── <module>.types.ts       # TypeScript interfaces
-├── <module>.validation.ts  # Joi validation schemas
+├── <module>.types.ts       # TypeScript type re-exports
+├── <module>.validation.ts  # Shared Zod validation schemas
 ├── <module>.service.ts     # Business logic
 ├── <module>.controller.ts  # Request handlers
 └── <module>.routes.ts      # Route definitions
@@ -64,39 +64,49 @@ Run migration:
 pnpm --filter kite-backend prisma migrate dev --name add_comments
 ```
 
-### Step 2: Create Types in @kite/types
+### Step 2: Create Schemas and Types in @kite/types
 
 Create `packages/types/src/comment.types.ts`:
 
 ```typescript
-import type { User } from "./user.types";
+import { z } from "zod";
+import { userSchema } from "./user.types";
+import { optionalIntegerQuerySchema } from "./schema-helpers";
 
-export interface Comment {
-  id: string;
-  content: string;
-  postId: string;
-  authorId: string;
-  author?: User;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export const commentSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  postId: z.string(),
+  authorId: z.string(),
+  author: userSchema.optional(),
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type Comment = z.infer<typeof commentSchema>;
 
-export interface CreateCommentRequest {
-  content: string;
-  postId: string;
-}
+export const createCommentRequestSchema = z.object({
+  content: z.string().max(1000),
+  postId: z.string().uuid(),
+});
+export type CreateCommentRequest = z.infer<typeof createCommentRequestSchema>;
 
-export interface UpdateCommentRequest {
-  content?: string;
-}
+export const updateCommentRequestSchema = z
+  .object({
+    content: z.string().max(1000).optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided for update",
+  });
+export type UpdateCommentRequest = z.infer<typeof updateCommentRequestSchema>;
 
-export interface GetCommentsQuery {
-  postId?: string;
-  authorId?: string;
-  limit?: number;
-  page?: number;
-}
+export const getCommentsQuerySchema = z.object({
+  postId: z.string().uuid().optional(),
+  authorId: z.string().uuid().optional(),
+  limit: optionalIntegerQuerySchema(100),
+  page: optionalIntegerQuerySchema(),
+});
+export type GetCommentsQuery = z.infer<typeof getCommentsQuerySchema>;
 ```
 
 Export from `packages/types/src/index.ts`:
@@ -130,44 +140,29 @@ export type {
 Create `apps/backend/src/modules/comments/comment.validation.ts`:
 
 ```typescript
-import Joi from "joi";
-
-const commentIdParam = Joi.object({
-  id: Joi.string().uuid().required(),
-});
-
-const createCommentBody = Joi.object({
-  content: Joi.string().required().max(1000),
-  postId: Joi.string().uuid().required(),
-});
-
-const updateCommentBody = Joi.object({
-  content: Joi.string().max(1000).optional(),
-});
-
-const getCommentsQuery = Joi.object({
-  postId: Joi.string().uuid().optional(),
-  authorId: Joi.string().uuid().optional(),
-  limit: Joi.number().integer().min(1).max(100).default(10),
-  page: Joi.number().integer().min(1).default(1),
-});
+import {
+  createCommentRequestSchema,
+  getCommentsQuerySchema,
+  updateCommentRequestSchema,
+  uuidParamSchema,
+} from "@kite/types";
 
 export const commentValidation = {
   create: {
-    body: createCommentBody,
+    body: createCommentRequestSchema,
   },
   update: {
-    params: commentIdParam,
-    body: updateCommentBody,
+    params: uuidParamSchema,
+    body: updateCommentRequestSchema,
   },
   delete: {
-    params: commentIdParam,
+    params: uuidParamSchema,
   },
   getById: {
-    params: commentIdParam,
+    params: uuidParamSchema,
   },
   getAll: {
-    query: getCommentsQuery,
+    query: getCommentsQuerySchema,
   },
 };
 ```
@@ -566,7 +561,7 @@ router.post(
 );
 ```
 
-Validates request body, params, and query against Joi schemas.
+Validates request body, params, and query against Zod schemas.
 
 ### 4. Error Handling
 

@@ -1,4 +1,6 @@
 
+import { Button } from "@/components/ui/button";
+
 interface PaginationInfo {
   total: number;
   totalPages: number;
@@ -24,11 +26,11 @@ export function PostPagination({
   }
 
   return (
-    <div className="flex items-center justify-between mt-4">
-      <p className="text-sm text-gray-700">
+    <div className="mt-4 flex items-center justify-between">
+      <p className="text-sm text-muted-foreground">
         Showing {itemsCount} of {pagination.total} posts
       </p>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"

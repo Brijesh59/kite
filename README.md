@@ -70,7 +70,7 @@ The admin and web login pages are prefilled with the matching demo credentials f
 - **ORM**: Prisma
 - **Auth**: JWT with refresh tokens
 - **Email**: Postmark
-- **Validation**: Joi
+- **Validation**: Zod shared schemas
 
 ### Frontend
 - **Framework**: React 18 with TypeScript
@@ -82,7 +82,7 @@ The admin and web login pages are prefilled with the matching demo credentials f
 - **Components**: CVA (class-variance-authority)
 
 ### Shared Packages
-- **@kite/types**: Shared TypeScript types
+- **@kite/types**: Shared Zod schemas and inferred TypeScript types
 - **@kite/config**: Configuration and constants
 - **@kite/ui**: Complete UI component library (22+ components)
 

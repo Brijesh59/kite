@@ -1,84 +1,60 @@
 import { Request, Response, NextFunction } from "express";
-import Joi from "joi";
+import { z } from "zod";
 import { logger } from "../common/logger";
 
+type ValidationSchema = z.ZodType;
+
 export interface ValidationOptions {
-  body?: Joi.Schema;
-  query?: Joi.Schema;
-  params?: Joi.Schema;
+  body?: ValidationSchema;
+  query?: ValidationSchema;
+  params?: ValidationSchema;
 }
+
+const formatZodIssue = (issue: z.ZodIssue) => ({
+  field: issue.path.join("."),
+  message: issue.message,
+});
 
 export const validate = (schemas: ValidationOptions) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Validate body
       if (schemas.body) {
-        const { error, value } = schemas.body.validate(req.body, {
-          abortEarly: false,
-          allowUnknown: false,
-          stripUnknown: true,
-        });
-
-        if (error) {
-          throw error;
-        }
-        req.body = value;
+        req.body = schemas.body.parse(req.body);
       }
 
-      // Validate query
       if (schemas.query) {
-        const { error, value } = schemas.query.validate(req.query, {
-          abortEarly: false,
-          allowUnknown: false,
-          stripUnknown: true,
+        const query = schemas.query.parse(req.query);
+        Object.defineProperty(req, "query", {
+          value: query,
+          configurable: true,
+          enumerable: true,
+          writable: true,
         });
-
-        if (error) {
-          throw error;
-        }
-        // Use Object.assign to update query params without reassigning
-        Object.assign(req.query, value);
       }
 
-      // Validate params
       if (schemas.params) {
-        const { error, value } = schemas.params.validate(req.params, {
-          abortEarly: false,
-          allowUnknown: false,
-          stripUnknown: true,
-        });
-
-        if (error) {
-          throw error;
-        }
-        req.params = value;
+        req.params = schemas.params.parse(req.params) as Request["params"];
       }
 
       next();
     } catch (error) {
-      if (error instanceof Joi.ValidationError) {
+      if (error instanceof z.ZodError) {
+        const details = error.issues.map(formatZodIssue);
+
         logger.warn("Validation failed", {
-          errors: error.details.map((detail) => detail.message),
-          details: error.details.map((detail) => ({
-            field: detail.path.join("."),
-            message: detail.message,
-            value: detail.context?.value,
-          })),
+          errors: details.map((detail) => detail.message),
+          details,
           requestId: req.headers["x-request-id"],
         });
 
         return res.status(400).json({
           success: false,
           message: "Validation failed",
-          errors: error.details.map((detail) => detail.message),
-          details: error.details.map((detail) => ({
-            field: detail.path.join("."),
-            message: detail.message,
-          })),
+          errors: details.map((detail) => detail.message),
+          details,
         });
       }
 
-      // Unknown validation error
       logger.error("Unknown validation error", error);
       return res.status(500).json({
         success: false,

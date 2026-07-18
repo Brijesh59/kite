@@ -3,7 +3,7 @@ import { PostService } from "./post.service";
 import { CatchAsyncClass } from "../../common/catch-async";
 import type { AuthRequest } from "../../common/types";
 import {
-  CreatePostRequest,
+  CreatePostData,
   UpdatePostRequest,
   GetPostsQuery,
 } from "./post.types";
@@ -22,7 +22,7 @@ export class PostController {
   async createPost(req: AuthRequest, res: Response) {
     const userId = req.user!.id;
     const workspaceId = req.headers["x-workspace-id"] as string;
-    const data: CreatePostRequest = { ...req.body, workspaceId };
+    const data: CreatePostData = { ...req.body, workspaceId };
 
     const post = await this.postService.createPost(userId, data);
 

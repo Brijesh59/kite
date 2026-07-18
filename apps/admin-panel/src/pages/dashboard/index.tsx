@@ -17,20 +17,17 @@ export default function DashboardPage() {
   const inactiveUsers = users.filter((u) => !u.isActive).length;
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+    <div className="flex flex-col gap-section">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-normal">Dashboard</h1>
+        <p className="text-muted-foreground">
           Overview of your platform's activity
         </p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* Total Posts */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -40,9 +37,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Draft Posts */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Draft Posts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -52,9 +48,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Published Posts */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Published Posts</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -64,9 +59,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Total Users */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -77,12 +71,11 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* User Stats */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeUsers}</div>
@@ -95,9 +88,9 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Inactive Users</CardTitle>
-            <XCircle className="h-4 w-4 text-red-600" />
+            <XCircle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inactiveUsers}</div>

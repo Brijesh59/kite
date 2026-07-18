@@ -1,5 +1,5 @@
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useWorkspaceStore } from "@/utils/workspace-store";
 import { getWorkspacesApi } from "@/api/workspaces";
@@ -34,7 +34,10 @@ export function WorkspaceSwitcher({
     queryFn: () => getWorkspacesApi({ limit: 100 }),
   });
 
-  const workspaces = workspacesData?.data.data.items || [];
+  const workspaces = useMemo(
+    () => workspacesData?.data.data.items || [],
+    [workspacesData?.data.data.items]
+  );
 
   // Update store when workspaces change
   useEffect(() => {
@@ -58,32 +61,35 @@ export function WorkspaceSwitcher({
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn(
+            "w-full justify-between group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0",
+            className
+          )}
         >
           <div className="flex items-center gap-2 overflow-hidden">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
               <span className="text-xs font-semibold">
                 {currentWorkspace?.name.charAt(0).toUpperCase()}
               </span>
             </div>
-            <span className="truncate text-sm font-medium">
+            <span className="truncate text-sm font-medium group-data-[collapsible=icon]:hidden">
               {currentWorkspace?.name || "Select workspace"}
             </span>
           </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-data-[collapsible=icon]:hidden" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
+      <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {workspaces.map((workspace) => (
+        {workspaces.map((workspace: WorkspaceWithRole) => (
           <DropdownMenuItem
             key={workspace.id}
             onSelect={() => handleSelectWorkspace(workspace)}
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <div className="flex size-6 items-center justify-center rounded-md bg-primary/10 text-primary">
                 <span className="text-xs font-semibold">
                   {workspace.name.charAt(0).toUpperCase()}
                 </span>

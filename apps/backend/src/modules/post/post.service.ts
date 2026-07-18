@@ -7,7 +7,7 @@ import {
 import {
   POST_STATUS,
 } from "./post.types";
-import type { Post, CreatePostRequest, UpdatePostRequest, GetPostsQuery } from "@kite/types";
+import type { Post, CreatePostData, UpdatePostRequest, GetPostsQuery } from "@kite/types";
 import { PAGINATION } from "@kite/config";
 
 export class PostService {
@@ -16,7 +16,7 @@ export class PostService {
   /**
    * Create a new post (always starts as DRAFT)
    */
-  async createPost(userId: string, data: CreatePostRequest): Promise<Post> {
+  async createPost(userId: string, data: CreatePostData): Promise<Post> {
     // Verify workspace access
     await this.verifyWorkspaceAccess(data.workspaceId, userId);
 

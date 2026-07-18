@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit2, Trash2 } from "lucide-react";
 import { type User } from "@kite/types";
-import { formatDate } from "@/lib/utils";
 
 interface UserTableProps {
   users: User[];
@@ -25,14 +24,22 @@ interface UserTableProps {
 }
 
 function getRoleBadgeVariant(role: string) {
-  switch (role) {
-    case "admin":
+  switch (role.toUpperCase()) {
+    case "ADMIN":
       return "destructive" as const;
-    case "member":
+    case "USER":
       return "default" as const;
     default:
       return "secondary" as const;
   }
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
 export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
@@ -64,7 +71,7 @@ export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className="size-8 p-0">
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
@@ -76,7 +83,7 @@ export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(user)}
-                      className="text-red-600"
+                      className="text-destructive"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete

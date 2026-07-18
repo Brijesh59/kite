@@ -145,7 +145,7 @@ export default function WorkspacesPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {workspaces.map((workspace) => (
+        {workspaces.map((workspace: WorkspaceWithRole) => (
           <Card key={workspace.id} className="p-6">
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -219,7 +219,7 @@ export default function WorkspacesPage() {
                 Description
               </label>
               <Textarea
-                value={formData.description}
+                value={formData.description || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
@@ -270,7 +270,7 @@ export default function WorkspacesPage() {
                 Description
               </label>
               <Textarea
-                value={formData.description}
+                value={formData.description || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }

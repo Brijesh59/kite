@@ -1,7 +1,6 @@
 import { Home, FileText, LogOut, User, Briefcase } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 
 import { useAuthStore } from "@/utils/auth-store";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,7 +22,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const { clearWorkspaces } = useWorkspaceStore();
   const queryClient = useQueryClient();
 
@@ -39,35 +38,25 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-4 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M11 7v10a5 5 0 0 0 5-5" />
-              <path d="m15 8-6 3" />
-              <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76" />
-            </svg>
+        <div className="flex items-center gap-3 px-4 py-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-background shadow-sm ring-1 ring-border">
+            <img
+              src="/logo.png"
+              alt="Kite logo"
+              className="size-full scale-150 object-cover"
+            />
           </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
+          <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
             <span className="truncate font-semibold">Kite</span>
             <span className="truncate text-xs text-muted-foreground">
-              Full-Stack Template
+              Workspace
             </span>
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent>
-        <div className="px-3 py-2">
+        <div className="px-3 py-2 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <WorkspaceSwitcher />
         </div>
 
@@ -130,27 +119,15 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center justify-between p-2">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                  <User className="h-4 w-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user?.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email}
-                  </span>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleLogout}
-                className="h-8 w-8"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
+            <SidebarMenuButton
+              type="button"
+              tooltip="Logout"
+              onClick={handleLogout}
+              className="group-data-[collapsible=icon]:size-10!"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

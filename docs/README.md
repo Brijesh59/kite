@@ -75,7 +75,7 @@ pnpm dev
 - **Database**: PostgreSQL
 - **ORM**: Prisma
 - **Authentication**: JWT with httpOnly cookies
-- **Validation**: Joi
+- **Validation**: Zod shared schemas
 - **Email**: Postmark
 
 ### Frontend

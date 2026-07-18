@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { Search } from "lucide-react";
+import type { Workspace } from "@kite/types";
 
 export default function WorkspacesPage() {
   const [search, setSearch] = useState("");
@@ -30,10 +31,10 @@ export default function WorkspacesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Workspaces</h1>
-        <p className="mt-2 text-gray-600">
+    <div className="flex flex-col gap-section">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-normal">Workspaces</h1>
+        <p className="text-muted-foreground">
           View all workspaces across the platform
         </p>
       </div>
@@ -43,7 +44,7 @@ export default function WorkspacesPage() {
           <div className="flex items-center justify-between">
             <CardTitle>All Workspaces ({total})</CardTitle>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search workspaces..."
                 value={search}
@@ -55,7 +56,7 @@ export default function WorkspacesPage() {
         </CardHeader>
         <CardContent>
           {workspaces.length === 0 ? (
-            <p className="py-8 text-center text-gray-500">No workspaces found</p>
+            <p className="py-8 text-center text-muted-foreground">No workspaces found</p>
           ) : (
             <Table>
               <TableHeader>
@@ -70,13 +71,13 @@ export default function WorkspacesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {workspaces.map((workspace) => (
+                {workspaces.map((workspace: Workspace) => (
                   <TableRow key={workspace.id}>
                     <TableCell className="font-medium">
                       {workspace.name}
                     </TableCell>
                     <TableCell>
-                      <code className="rounded bg-gray-100 px-2 py-1 text-xs">
+                      <code className="rounded bg-muted px-2 py-1 text-xs">
                         {workspace.slug}
                       </code>
                     </TableCell>
@@ -85,7 +86,7 @@ export default function WorkspacesPage() {
                         <div className="font-medium">
                           {workspace.owner?.name || "Unknown"}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {workspace.owner?.email}
                         </div>
                       </div>

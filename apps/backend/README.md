@@ -21,7 +21,7 @@ A simplified, production-ready Node.js Express backend with TypeScript, featurin
 - **Tag-based Organization** for posts
 
 ### Security & Production Features
-- **Route-level Validation** using Joi schemas
+- **Route-level Validation** using shared Zod schemas
 - **Comprehensive Error Handling** with structured responses
 - **HTTP Request Logging** with performance monitoring
 - **Rate Limiting** protection
@@ -46,7 +46,7 @@ backend/
 │   ├── middleware/              # Express middlewares
 │   │   ├── auth.middleware.ts   # JWT authentication & authorization
 │   │   ├── httpLogger.ts        # HTTP request/response logging
-│   │   └── validation.ts        # Joi validation middleware
+│   │   └── validation.ts        # Zod validation middleware
 │   │
 │   ├── modules/
 │   │   ├── auth/                # Authentication module
@@ -89,7 +89,7 @@ backend/
 - **Framework**: Express.js
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: JWT with bcrypt hashing
-- **Validation**: Joi schemas at route level
+- **Validation**: Zod schemas at route level
 - **Logging**: Winston with daily rotation
 - **Development**: tsx for hot reloading
 

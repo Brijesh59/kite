@@ -11,7 +11,6 @@ import { WORKSPACE_LIMITS, PAGINATION } from "@kite/config";
 import {
   BadRequestException,
   NotFoundException,
-  ForbiddenException,
 } from "../../common/app-error";
 
 export class WorkspaceService {

@@ -21,14 +21,7 @@ export class AdminController {
    * Get all users with pagination and filtering
    */
   public async getUsers(req: Request, res: Response) {
-    const query: GetUsersQuery = {
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 10,
-      search: req.query.search as string,
-      role: req.query.role as any,
-      sortBy: (req.query.sortBy as any) || "createdAt",
-      sortOrder: (req.query.sortOrder as any) || "desc",
-    };
+    const query = req.query as GetUsersQuery;
 
     const result = await this.adminService.getUsers(query);
 
@@ -107,15 +100,7 @@ export class AdminController {
    * Get all posts with pagination and filtering
    */
   public async getPosts(req: Request, res: Response) {
-    const query: GetPostsQuery = {
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 10,
-      search: req.query.search as string,
-      status: req.query.status as any,
-      userId: req.query.userId as string,
-      sortBy: (req.query.sortBy as any) || "createdAt",
-      sortOrder: (req.query.sortOrder as any) || "desc",
-    };
+    const query = req.query as GetPostsQuery;
 
     const result = await this.adminService.getPosts(query);
 
@@ -162,13 +147,7 @@ export class AdminController {
    * Get all workspaces across all users with pagination and filtering
    */
   public async getWorkspaces(req: Request, res: Response) {
-    const query = {
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 10,
-      search: req.query.search as string,
-      sortBy: (req.query.sortBy as any) || "createdAt",
-      sortOrder: (req.query.sortOrder as any) || "desc",
-    };
+    const query = req.query;
 
     const result = await this.adminService.getWorkspaces(query);
 

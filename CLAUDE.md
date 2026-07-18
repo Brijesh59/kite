@@ -61,7 +61,7 @@ docs/
 
 #### Backend (Express.js)
 - **Framework**: Express.js with TypeScript
-- **Validation**: Joi
+- **Validation**: Zod shared schemas
 - **Module Structure**: Each feature has `.types.ts`, `.validation.ts`, `.service.ts`, `.controller.ts`, `.routes.ts`
 - **Database**: PostgreSQL via Prisma ORM
 - **Port**: 9000 (configurable via PORT env var)
@@ -319,7 +319,7 @@ VITE_APP_NAME=Kite
 
 1. **Express.js, NOT NestJS**: The backend uses Express.js with TypeScript, not NestJS. Don't suggest NestJS patterns.
 
-2. **Joi, NOT class-validator**: Backend validation uses Joi schemas, not class-validator decorators.
+2. **Zod, NOT class-validator**: Backend validation uses shared Zod schemas from `@kite/types`, not class-validator decorators.
 
 3. **Tailwind CSS v4**: Uses CSS-first approach with `@import "tailwindcss"` and `@theme inline` directive.
 
@@ -340,7 +340,7 @@ VITE_APP_NAME=Kite
 ### 🚫 Common Mistakes to Avoid
 
 1. ❌ **Don't use NestJS decorators** (use Express route handlers)
-2. ❌ **Don't use class-validator** (use Joi schemas)
+2. ❌ **Don't use class-validator** (use shared Zod schemas)
 3. ❌ **Don't use Tailwind config.js** (use CSS `@theme inline` in v4)
 4. ❌ **Don't mix cookie names** (admin vs web app)
 5. ❌ **Don't forget workspace:* protocol** for internal deps
@@ -358,7 +358,7 @@ VITE_APP_NAME=Kite
 4. ✅ **Import UI components** from @kite/ui
 5. ✅ **Use TanStack Query** for server state
 6. ✅ **Use Zustand** for client state
-7. ✅ **Validate on both** frontend (Zod) and backend (Joi)
+7. ✅ **Validate on both** frontend and backend with shared Zod schemas
 8. ✅ **Keep components small** and focused
 9. ✅ **Write self-documenting code** with clear names
 10. ✅ **Test manually** after changes

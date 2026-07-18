@@ -4,7 +4,10 @@ import { authMiddleware, requireAdmin } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validation";
 import {
   createUserValidation,
+  getPostsQueryValidation,
+  getWorkspacesQueryValidation,
   updateUserValidation,
+  updatePostValidation,
   userIdValidation,
   getUsersQueryValidation,
 } from "./admin.validation";
@@ -19,7 +22,7 @@ router.use(requireAdmin);
 // User management routes
 router.get(
   "/users",
-  // validate({ query: getUsersQueryValidation }),
+  validate({ query: getUsersQueryValidation }),
   adminController.getUsers.bind(adminController)
 );
 
@@ -48,14 +51,30 @@ router.delete(
 );
 
 // Post management routes
-router.get("/posts", adminController.getPosts.bind(adminController));
+router.get(
+  "/posts",
+  validate({ query: getPostsQueryValidation }),
+  adminController.getPosts.bind(adminController)
+);
 
-router.put("/posts/:id", adminController.updatePost.bind(adminController));
+router.put(
+  "/posts/:id",
+  validate({ params: userIdValidation, body: updatePostValidation }),
+  adminController.updatePost.bind(adminController)
+);
 
-router.delete("/posts/:id", adminController.deletePost.bind(adminController));
+router.delete(
+  "/posts/:id",
+  validate({ params: userIdValidation }),
+  adminController.deletePost.bind(adminController)
+);
 
 // Workspace management routes
-router.get("/workspaces", adminController.getWorkspaces.bind(adminController));
+router.get(
+  "/workspaces",
+  validate({ query: getWorkspacesQueryValidation }),
+  adminController.getWorkspaces.bind(adminController)
+);
 
 export function setAdminRoutes(app: Express) {
   app.use("/api/admin", router);

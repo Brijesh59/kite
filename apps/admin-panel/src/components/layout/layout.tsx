@@ -12,7 +12,7 @@ export function Layout({ children }: LayoutProps) {
       <AppSidebar />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col p-4 gap-4">{children}</div>
+        <main className="flex flex-1 flex-col gap-section p-page">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

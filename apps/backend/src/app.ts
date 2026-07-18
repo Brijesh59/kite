@@ -42,7 +42,7 @@ setProfileRoutes(app);
 app.use("/api/workspaces", workspaceRoutes);
 
 // Global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof AppError && err.isOperational) {
     return res.status(err.statusCode).json({
       statusCode: err.statusCode,

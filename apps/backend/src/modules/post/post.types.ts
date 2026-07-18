@@ -2,6 +2,7 @@
 export type {
   Post,
   CreatePostRequest,
+  CreatePostData,
   UpdatePostRequest,
   PostFilters,
 } from "@kite/types";

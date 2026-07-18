@@ -372,10 +372,8 @@ export class AuthService {
    * Refresh JWT tokens using refresh token
    */
   async refreshTokens(refreshToken: string): Promise<AuthTokens> {
-    let payload: any;
-
     try {
-      payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!);
+      jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!);
     } catch {
       throw new UnauthorizedException("Invalid refresh token");
     }

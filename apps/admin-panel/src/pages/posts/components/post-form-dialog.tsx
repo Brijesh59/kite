@@ -1,7 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Post, CreatePostRequest } from "@kite/types";
+import {
+  createPostRequestSchema,
+  type Post,
+  type CreatePostRequest,
+} from "@kite/types";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,14 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 const postSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Title must be at least 3 characters")
-    .max(200, "Title cannot exceed 200 characters"),
-  content: z
-    .string()
-    .min(10, "Content must be at least 10 characters")
-    .max(5000, "Content cannot exceed 5000 characters"),
+  ...createPostRequestSchema.shape,
   isPublished: z.boolean(),
 });
 
@@ -63,8 +60,13 @@ export function PostFormDialog({
   };
 
   const onFormSubmit = (data: PostForm) => {
+    const postData = {
+      title: data.title,
+      content: data.content,
+    };
+
     onSubmit({
-      ...data,
+      ...postData,
     });
   };
 

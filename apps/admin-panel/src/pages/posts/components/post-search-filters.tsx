@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { getWorkspacesApi } from "@/api/workspaces";
+import type { Workspace } from "@kite/types";
 
 interface PostSearchFiltersProps {
   search: string;
@@ -69,7 +70,7 @@ export function PostSearchFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Workspaces</SelectItem>
-            {workspaces.map((workspace) => (
+            {workspaces.map((workspace: Workspace) => (
               <SelectItem key={workspace.id} value={workspace.id}>
                 {workspace.name}
               </SelectItem>

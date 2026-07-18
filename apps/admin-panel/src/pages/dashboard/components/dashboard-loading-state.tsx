@@ -1,7 +1,9 @@
 
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
 export function DashboardLoadingState() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col gap-section">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">Welcome to Admin Panel</p>
@@ -9,7 +11,7 @@ export function DashboardLoadingState() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
               <div className="h-4 w-20 bg-muted animate-pulse rounded" />
               <div className="h-4 w-4 bg-muted animate-pulse rounded" />
             </CardHeader>
@@ -29,11 +31,11 @@ export function DashboardLoadingState() {
             <div className="h-4 w-48 bg-muted animate-pulse rounded" />
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center space-x-3">
+                <div key={i} className="flex items-center gap-3">
                   <div className="h-8 w-8 bg-muted animate-pulse rounded-full" />
-                  <div className="flex-1 space-y-2">
+                  <div className="flex flex-1 flex-col gap-2">
                     <div className="h-4 w-32 bg-muted animate-pulse rounded" />
                     <div className="h-3 w-48 bg-muted animate-pulse rounded" />
                   </div>
@@ -50,7 +52,7 @@ export function DashboardLoadingState() {
             <div className="h-4 w-48 bg-muted animate-pulse rounded" />
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="h-10 bg-muted animate-pulse rounded" />
               ))}

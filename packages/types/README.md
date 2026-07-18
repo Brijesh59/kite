@@ -1,14 +1,15 @@
 # @kite/types
 
-Shared TypeScript type definitions for the entire monorepo. Ensures type consistency between backend and frontend applications.
+Shared Zod schemas and inferred TypeScript types for the entire monorepo. Ensures runtime validation and type consistency between backend and frontend applications.
 
 ## Overview
 
 This package provides:
-- **Shared Types** - Single source of truth for data models
-- **API Response Types** - Standard response structures
+- **Shared Schemas** - Single source of truth for runtime validation
+- **Inferred Types** - TypeScript types derived from Zod schemas
+- **API Response Schemas** - Standard response structures
 - **Request/Response DTOs** - Type-safe API communication
-- **Domain Types** - User, Post, Auth, Profile types
+- **Domain Contracts** - User, Post, Auth, Profile schemas and types
 - **Utility Types** - Pagination, filtering, common patterns
 
 ## Installation
@@ -28,9 +29,11 @@ Automatically linked via PNPM workspaces:
 ### In Backend
 ```typescript
 import type { User, CreateUserRequest } from "@kite/types";
+import { createUserRequestSchema } from "@kite/types";
 
 export class UserService {
   async createUser(data: CreateUserRequest): Promise<User> {
+    const userData = createUserRequestSchema.parse(data);
     // Implementation
   }
 }
@@ -38,136 +41,107 @@ export class UserService {
 
 ### In Frontend
 ```typescript
-import type { User, ApiResponse, PaginatedResponse } from "@kite/types";
+import { loginRequestSchema, type User, type ApiResponse, type PaginatedResponse } from "@kite/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const getUsersApi = () =>
   api.get<ApiResponse<PaginatedResponse<User>>>("/api/admin/users");
+
+const loginResolver = zodResolver(loginRequestSchema);
 ```
 
 ## Type Files
 
 ### user.types.ts
-User-related types and enums:
+User-related schemas and inferred types:
 - `User` - User entity
+- `userSchema` - User entity schema
 - `UserRole` - USER | ADMIN
 - `CreateUserRequest` - User creation DTO
+- `createUserRequestSchema` - User creation schema
 - `UpdateUserRequest` - User update DTO
 
 ### auth.types.ts
-Authentication types:
+Authentication schemas and inferred types:
 - `LoginRequest` - Login credentials
+- `loginRequestSchema` - Login validation schema
 - `RegisterRequest` - Registration data
 - `LoginResponse` - Login result with tokens
 - `AuthTokens` - Access and refresh tokens
 
 ### post.types.ts
-Content management types:
+Content management schemas and inferred types:
 - `Post` - Post entity
 - `PostStatus` - DRAFT | PUBLISHED
 - `CreatePostRequest` - Post creation DTO
+- `createPostRequestSchema` - Post creation schema
 - `UpdatePostRequest` - Post update DTO
 - `GetPostsQuery` - Post filtering query
 
 ### api.types.ts
-API communication types:
+API communication schemas and inferred types:
 - `ApiResponse<T>` - Standard response wrapper
+- `apiResponseSchema` - Standard response schema factory
 - `PaginatedResponse<T>` - Paginated list response
 - `ApiError` - Error response structure
-- `PaginationQuery` - Common pagination params
+- `PaginationParams` - Common pagination params
 
 ### profile.types.ts
-User profile types:
+User profile schemas and inferred types:
 - `UserProfile` - Profile entity
 - `UpdateProfileRequest` - Profile update DTO
+- `updateProfileRequestSchema` - Profile update schema
 
-## Type Definitions
+## Schema Definitions
 
-### User Types
+### User Contracts
 ```typescript
-export type UserRole = "USER" | "ADMIN";
+export const userRoleSchema = z.enum(["ADMIN", "ORGANISER", "ARTIST", "USER"]);
+export type UserRole = z.infer<typeof userRoleSchema>;
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  mobile?: string;
-  role: UserRole;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateUserRequest {
-  name: string;
-  email: string;
-  mobile?: string;
-  password: string;
-  role: UserRole;
-}
-
-export interface UpdateUserRequest {
-  name?: string;
-  email?: string;
-  mobile?: string;
-  role?: UserRole;
-  isActive?: boolean;
-}
+export const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  mobile: z.string().nullable().optional(),
+  role: userRoleSchema,
+  isActive: z.boolean(),
+});
+export type User = z.infer<typeof userSchema>;
 ```
 
-### API Response Types
+### API Response Contracts
 ```typescript
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
+  z.object({
+    success: z.boolean(),
+    message: z.string(),
+    data: dataSchema,
+  });
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface ApiError {
-  message: string;
-  errors?: Array<{
-    field: string;
-    message: string;
-  }>;
-}
+export type ApiResponse<T = unknown> = z.infer<
+  ReturnType<typeof apiResponseSchema<z.ZodType<T>>>
+>;
 ```
 
-### Post Types
+### Post Contracts
 ```typescript
-export type PostStatus = "DRAFT" | "PUBLISHED";
+export const postStatusSchema = z.enum(["DRAFT", "PUBLISHED"]);
+export type PostStatus = z.infer<typeof postStatusSchema>;
 
-export interface Post {
-  id: string;
-  title: string;
-  content: string;
-  status: PostStatus;
-  authorId: string;
-  author?: User;
-  isActive: boolean;
-  publishedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export const createPostRequestSchema = z.object({
+  title: z.string().max(200),
+  content: z.string(),
+});
+export type CreatePostRequest = z.infer<typeof createPostRequestSchema>;
 
-export interface CreatePostRequest {
-  title: string;
-  content: string;
-  status?: PostStatus;
-}
-
-export interface GetPostsQuery {
-  page?: number;
-  limit?: number;
-  status?: PostStatus | "ALL";
-  search?: string;
-}
+export const getPostsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "ALL"]).optional(),
+  search: z.string().optional(),
+});
+export type GetPostsQuery = z.infer<typeof getPostsQuerySchema>;
 ```
 
 ## File Structure
@@ -175,35 +149,39 @@ export interface GetPostsQuery {
 ```
 packages/types/
 ├── src/
-│   ├── index.ts              # Re-exports all types
-│   ├── user.types.ts         # User types
-│   ├── auth.types.ts         # Auth types
-│   ├── post.types.ts         # Post types
-│   ├── profile.types.ts      # Profile types
-│   ├── api.types.ts          # API types
-│   └── common.types.ts       # Utility types
+│   ├── index.ts              # Re-exports schemas and types
+│   ├── schema-helpers.ts     # Shared schema helpers
+│   ├── user.types.ts         # User schemas and types
+│   ├── auth.types.ts         # Auth schemas and types
+│   ├── post.types.ts         # Post schemas and types
+│   ├── profile.types.ts      # Profile schemas and types
+│   └── api.types.ts          # API schemas and types
 ├── package.json
 └── tsconfig.json
 ```
 
-## Adding New Types
+## Adding New Contracts
 
-1. **Create or update type file**:
+1. **Create or update schema file**:
 ```typescript
 // src/comment.types.ts
-export interface Comment {
-  id: string;
-  content: string;
-  postId: string;
-  authorId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { z } from "zod";
 
-export interface CreateCommentRequest {
-  content: string;
-  postId: string;
-}
+export const commentSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  postId: z.string(),
+  authorId: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type Comment = z.infer<typeof commentSchema>;
+
+export const createCommentRequestSchema = z.object({
+  content: z.string().max(1000),
+  postId: z.string().uuid(),
+});
+export type CreateCommentRequest = z.infer<typeof createCommentRequestSchema>;
 ```
 
 2. **Export from index**:
@@ -216,30 +194,32 @@ export * from "./comment.types";
 ```typescript
 // Backend
 import type { Comment, CreateCommentRequest } from "@kite/types";
+import { createCommentRequestSchema } from "@kite/types";
 
 // Frontend
 import type { Comment } from "@kite/types";
+import { createCommentRequestSchema } from "@kite/types";
 ```
 
 ## Best Practices
 
-### Type Naming
-- ✅ Use PascalCase for types and interfaces
+### Naming
+- ✅ Use camelCase for schemas and PascalCase for inferred types
 - ✅ Suffix DTOs with `Request` or `Response`
 - ✅ Use descriptive names: `CreateUserRequest` not `UserCreate`
-- ✅ Keep types focused and single-purpose
+- ✅ Keep schemas focused and single-purpose
 
-### Type Organization
-- ✅ Group related types in same file
+### Organization
+- ✅ Group related schemas and inferred types in same file
 - ✅ One entity per file (user.types.ts, post.types.ts)
 - ✅ Re-export everything from index.ts
-- ✅ Keep types pure (no runtime code)
+- ✅ Export schemas first, then infer types with `z.infer`
 
 ### Type Safety
 - ✅ Avoid `any` type
-- ✅ Use union types for enums: `"USER" | "ADMIN"`
-- ✅ Make optional fields explicit with `?`
-- ✅ Use `Readonly` for immutable types
+- ✅ Use `z.enum` for enums
+- ✅ Make optional fields explicit with `.optional()`
+- ✅ Reuse shared schemas in frontend forms and backend route validation
 
 ### Documentation
 - ✅ Add JSDoc comments for complex types

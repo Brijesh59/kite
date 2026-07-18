@@ -4,25 +4,26 @@ import { Link } from "react-router-dom";
 import { usePosts } from "@/api/posts/use-posts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DashboardFormSection } from "./components/dashboard-form-section";
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);
   const { data: postsData } = usePosts({ limit: 1 });
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Welcome back, {user?.name}!</h1>
-        <p className="mt-2 text-gray-600">
+    <div className="flex flex-col gap-section">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-normal">
+          Welcome back, {user?.name}!
+        </h1>
+        <p className="text-muted-foreground">
           Here's an overview of your account
         </p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Role</CardTitle>
             <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -33,7 +34,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Posts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -44,7 +45,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
             <CardTitle className="text-sm font-medium">Profile</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -55,7 +56,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -92,27 +92,28 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Account Info */}
       <Card>
         <CardHeader>
           <CardTitle>Account Information</CardTitle>
           <CardDescription>Your account details</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="flex flex-col gap-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Email:</span>
+            <span className="text-muted-foreground">Email:</span>
             <span className="font-medium">{user?.email}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Role:</span>
+            <span className="text-muted-foreground">Role:</span>
             <span className="font-medium">{user?.role}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Status:</span>
-            <span className="font-medium text-green-600">Active</span>
+            <span className="text-muted-foreground">Status:</span>
+            <span className="font-medium text-success">Active</span>
           </div>
         </CardContent>
       </Card>
+
+      <DashboardFormSection />
     </div>
   );
 }

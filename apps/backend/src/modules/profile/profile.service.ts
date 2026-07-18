@@ -47,7 +47,7 @@ export class ProfileService {
         where: { userId },
       });
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

@@ -1,21 +1,13 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { loginRequestSchema, type LoginRequest } from "@kite/types";
 import { useLogin } from "@/api/auth/use-auth";
-import { Eye, EyeOff } from "lucide-react";
+import { Form } from "@kite/ui";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
+type LoginForm = LoginRequest;
 
 const demoUserCredentials = {
   email: "user@kite.test",
@@ -23,15 +15,10 @@ const demoUserCredentials = {
 };
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<LoginForm>({
+    resolver: zodResolver(loginRequestSchema),
     defaultValues: demoUserCredentials,
   });
 
@@ -40,88 +27,76 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Kite</h1>
-          <p className="mt-2 text-gray-600">Sign in to your account</p>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+      <div className="flex w-full max-w-md flex-col gap-8">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center overflow-hidden rounded-lg bg-background shadow-sm ring-1 ring-border">
+            <img
+              src="/logo.png"
+              alt="Kite logo"
+              className="size-full scale-150 object-cover"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h1 className="text-3xl font-bold tracking-normal text-foreground">
+              Kite
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Workspaces, drafts, and publishing in one place.
+            </p>
+          </div>
         </div>
 
-        <Card>
+        <Card className="shadow-md">
           <CardHeader>
             <CardTitle>Login</CardTitle>
             <CardDescription>
-              Enter your credentials to continue
+              Demo credentials are ready for local testing.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
+            <Form form={form} onSubmit={onSubmit}>
+              {({ FormInput }) => (
+                <>
+                  <FormInput
+                    name="email"
+                    label="Email"
+                    type="email"
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                  />
+                  <FormInput
+                    name="password"
+                    label="Password"
                     placeholder="Enter your password"
-                    {...register("password")}
+                    autoComplete="current-password"
+                    showPasswordToggle
                   />
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
+                    type="submit"
+                    className="w-full"
+                    disabled={login.isPending}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {login.isPending ? "Signing in..." : "Sign in"}
                   </Button>
-                </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={login.isPending}
-              >
-                {login.isPending ? "Signing in..." : "Sign in"}
-              </Button>
-
-              <div className="flex items-center justify-between">
-                <Link
-                  to="/auth/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-500"
-                >
-                  Forgot password?
-                </Link>
-                <Link
-                  to="/auth/register"
-                  className="text-sm text-blue-600 hover:text-blue-500"
-                >
-                  Create account
-                </Link>
-              </div>
-            </form>
+                  <div className="flex items-center justify-between">
+                    <Link
+                      to="/auth/forgot-password"
+                      className="text-sm font-medium text-primary hover:text-primary/80"
+                    >
+                      Forgot password?
+                    </Link>
+                    <Link
+                      to="/auth/register"
+                      className="text-sm font-medium text-primary hover:text-primary/80"
+                    >
+                      Create account
+                    </Link>
+                  </div>
+                </>
+              )}
+            </Form>
           </CardContent>
         </Card>
       </div>
