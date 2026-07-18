@@ -30,6 +30,37 @@ pnpm dev
 - Admin Panel: http://localhost:5173
 - Web App: http://localhost:5174
 
+## Seed data into the database
+
+If you use the backend Docker Compose file, demo data is seeded automatically the first time the Postgres volume is created:
+
+```bash
+cd apps/backend
+docker compose up -d postgres
+```
+
+Postgres only runs Docker init scripts on the first volume mount. If the `postgres_data_kite` volume already exists, Docker will keep the existing database and skip the automatic seed.
+
+You can also seed an existing database manually:
+
+```bash
+# From the repo root
+pnpm db:seed
+
+# Or from apps/backend
+pnpm db:seed
+```
+
+The seed creates:
+- Demo admin user: `admin@kite.test` / `DemoPass123!`
+- Demo normal user: `user@kite.test` / `DemoPass123!`
+- Completed profiles for both demo users
+- Demo workspaces/orgs: `Demo Admin Ops`, `Acme Creative`, and `Acme Events`
+- Workspace memberships for the seeded users
+- Demo posts across draft and published states
+
+The admin and web login pages are prefilled with the matching demo credentials for smoother local testing.
+
 ## Tech Stack
 
 ### Backend

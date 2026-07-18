@@ -19,8 +19,17 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+const getApiBaseUrl = () => {
+  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:9000";
+  const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
+
+  return normalizedBaseUrl.endsWith("/api")
+    ? normalizedBaseUrl
+    : `${normalizedBaseUrl}/api`;
+};
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:9000",
+  baseURL: getApiBaseUrl(),
   withCredentials: true, // Enable cookies for cross-origin requests
 });
 

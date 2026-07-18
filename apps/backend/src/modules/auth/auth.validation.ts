@@ -2,10 +2,13 @@ import Joi from "joi";
 import { VALIDATION_RULES, PASSWORD_ERROR_MESSAGES } from "@kite/config";
 
 // Common schemas using shared config
-const email = Joi.string().email().required().messages({
-  "string.email": "Please provide a valid email address",
-  "any.required": "Email is required",
-});
+const email = Joi.string()
+  .email({ tlds: { allow: false } })
+  .required()
+  .messages({
+    "string.email": "Please provide a valid email address",
+    "any.required": "Email is required",
+  });
 
 const password = Joi.string()
   .min(VALIDATION_RULES.password.minLength)
@@ -16,6 +19,11 @@ const password = Joi.string()
     "string.pattern.base": PASSWORD_ERROR_MESSAGES.invalid,
     "any.required": "Password is required",
   });
+
+const loginPassword = Joi.string().min(1).required().messages({
+  "string.empty": "Password is required",
+  "any.required": "Password is required",
+});
 
 const name = Joi.string()
   .min(VALIDATION_RULES.name.minLength)
@@ -61,10 +69,17 @@ export const authValidation = {
 
   login: {
     body: Joi.object({
-      email,
-      password,
-      clientType: Joi.string().valid('web', 'admin').optional(),
-    }),
+      email: email.optional(),
+      mobile: mobile.optional(),
+      password: loginPassword.optional(),
+      otp: otp.optional(),
+      clientType: Joi.string().valid("web", "admin").optional(),
+    })
+      .or("email", "mobile")
+      .or("password", "otp")
+      .messages({
+        "object.missing": "Email or mobile and password or OTP are required",
+      }),
   },
 
   sendOtp: {

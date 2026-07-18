@@ -14,5 +14,6 @@ export interface GetPostsQuery {
   limit?: number;
   status?: "DRAFT" | "PUBLISHED" | "ALL";
   userId?: string;
+  workspaceId?: string;
   search?: string;
 }

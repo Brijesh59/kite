@@ -17,6 +17,11 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
+const demoAdminCredentials = {
+  email: "admin@kite.test",
+  password: "DemoPass123!",
+};
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
@@ -27,6 +32,7 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
+    defaultValues: demoAdminCredentials,
   });
 
   const onSubmit = (data: LoginForm) => {
